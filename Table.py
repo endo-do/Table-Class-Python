@@ -4,7 +4,7 @@ def sort_dict(d):
 class Table:
     def __init__(self, content, space_left=1, space_right=1, orientation="left", 
                 empty_cells=["", "#empty"], empty_lists=["", "#empty"], empty_dicts=["", "#empty"], replace_empty="",
-                header=True, fill_with_empty_rows=False, fill_with_empty_columns=False):
+                header={"row":[]}, fill_with_empty_rows=False, fill_with_empty_columns=False):
         
         self.content = content 
         self.space_left = space_left 
@@ -42,9 +42,13 @@ class Table:
         self.structure = f"{str2.__name__}_in_{str1.__name__}"
         
         if self.structure == "dict_in_list":
-            self.content = sorted(self.content, key=lambda d: next(iter(d)))
+            if self.fill_with_empty_rows:
+                rows = [key for d in self.content for key in d]
+                for row in range(rows[0], rows[-1]):
+                    if row not in rows:
+                        self.content.append({row:[]})
             new_content = []
-
+            self.content = sorted(self.content, key=lambda d: next(iter(d)))
             for line in self.content:
                 
                 if any(str(val) in self.empty_dicts for val in line.values()):
@@ -55,8 +59,13 @@ class Table:
             self.content = new_content
 
         elif self.structure == "list_in_dict":
-            self.content = dict(sorted(self.content.items()))
+            if self.fill_with_empty_rows:
+                rows = [list(self.content.keys())]
+                for row in range(rows[0], rows[-1]):
+                    if row not in rows:
+                        self.content[row] = []
             new_content = []
+            self.content = dict(sorted(self.content.items()))
             for line in self.content.values():
                 if line in self.empty_lists:
                     new_content.append(self.replace_empty)
@@ -66,9 +75,20 @@ class Table:
             self.content = new_content
 
         elif self.structure == "dict_in_dict":
-            self.content = {k: dict(sorted(v.items())) if isinstance(v, dict) else v for k, v in sorted(self.content.items())}
+            if self.fill_with_empty_rows:
+                rows = list(self.content.keys())
+                for row in range(rows[0], rows[-1]):
+                    if row not in rows:
+                        self.content[row] = {}
+            if self.fill_with_empty_columns:
+                for key, row in self.content.items():
+                    columns = list(row.keys())
+                    if len(columns) >= 2:
+                        for col in range(columns[0], columns[-1]):
+                            if col not in columns:
+                                self.content[key][col] = ""
             new_content = []
-
+            self.content = {k: dict(sorted(v.items())) if isinstance(v, dict) else v for k, v in sorted(self.content.items())}
             for line in self.content:
                 if self.content[line] in self.empty_dicts:
                     new_line = [""]
@@ -82,12 +102,19 @@ class Table:
             
             self.content = new_content
 
-        self.rows = len(self.content) 
+        self.rows = len(self.content)
         
         for row in self.content:
             if len(row) > self.columns: 
                 self.columns = len(row)
 
+        if "row" in self.header:
+            if self.header["row"] == []:
+                self.header["row"] = [f"{index}." for index in range(self.columns)]
+                self.rows += 1
+            
+            self.content = [self.header["row"]] + self.content
+        
         for index, row in enumerate(self.content):
             if row == []:
                 for i in range(self.columns):
@@ -100,13 +127,12 @@ class Table:
         new_content = []
 
         for line in self.content: 
-            new_content.append([str(char) if char not in self.empty_cells else self.replace_empty for char in line]) 
+            new_content.append([str(char) if char not in self.empty_cells else self.replace_empty for char in line])
 
         self.content = new_content 
 
         for cell in range(self.columns): 
             self.max_chars.append(0)
-        
 
         for row in self.content: 
             active_column = 0
@@ -161,7 +187,7 @@ class Table:
 
                 column_index += 1  
             
-            if row_index == 0 and self.header: 
+            if row_index == 0 and "row" in self.header: 
                 left_border = "╠"
                 connection = "═"
                 right_border = "╣"
@@ -195,3 +221,4 @@ class Table:
                 column_index += 1
 
             row_index += 1
+           
