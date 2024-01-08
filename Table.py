@@ -1,19 +1,18 @@
-
 def sort_dict(d):
    return {k: sort_dict(v) if isinstance(v, dict) else v for k, v in sorted(d.items())}
 
 class Table:
     def __init__(self, content, space_left=1, space_right=1, orientation="left", 
-                empty_cell="", empty_dict_value="", empty_list="", empty_dict="", replace_empty="",
+                empty_cells=["", "#empty"], empty_lists=["", "#empty"], empty_dicts=["", "#empty"], replace_empty="",
                 header=True, fill_with_empty_rows=False, fill_with_empty_columns=False):
+        
         self.content = content 
         self.space_left = space_left 
         self.space_right = space_right 
         self.orientation = orientation 
-        self.empty_cell = empty_cell 
-        self.empty_dict_value = empty_dict_value
-        self.empty_list = empty_list
-        self.empty_dict = empty_dict
+        self.empty_cells = empty_cells
+        self.empty_lists = empty_lists
+        self.empty_dicts = empty_dicts
         self.replace_empty = replace_empty
         self.header = header
         self.fill_with_empty_rows = fill_with_empty_rows
@@ -48,7 +47,7 @@ class Table:
 
             for line in self.content:
                 
-                if any(str(val) == str(self.empty_dict) for val in line.values()):
+                if any(str(val) in self.empty_dicts for val in line.values()):
                     new_content.append([""])
                 else:
                     new_content.extend([char for char in line.values()])
@@ -59,8 +58,8 @@ class Table:
             self.content = dict(sorted(self.content.items()))
             new_content = []
             for line in self.content.values():
-                if list(line) == [self.empty_list]:
-                    new_content.append([""])
+                if line in self.empty_lists:
+                    new_content.append(self.replace_empty)
                 else:
                     new_content.append(line)
             
@@ -71,13 +70,13 @@ class Table:
             new_content = []
 
             for line in self.content:
-                if self.content[line] == {self.empty_dict}:
+                if self.content[line] in self.empty_dicts:
                     new_line = [""]
                 else:
                     new_line = []
                     for cell in self.content[line].values():
-                        if str(cell) == str(self.empty_cell):
-                            cell = ""
+                        if str(cell) in self.empty_cells:
+                            cell = self.replace_empty
                         new_line.append(cell)
                 new_content.append(new_line)
             
@@ -101,7 +100,7 @@ class Table:
         new_content = []
 
         for line in self.content: 
-            new_content.append([str(char) if char != self.empty_cell else self.replace_empty for char in line]) 
+            new_content.append([str(char) if char not in self.empty_cells else self.replace_empty for char in line]) 
 
         self.content = new_content 
 
@@ -195,7 +194,4 @@ class Table:
 
                 column_index += 1
 
-            row_index += 1  
-
-t = Table({1:[1, 2, 3, 4], 3:["a", " ", "hello", "#empty"], 6:["#empty"], 5:[2, 4, 6, 8], 4:[]}, replace_empty="", empty_cell="#empty", header=True)
-t.main()
+            row_index += 1
