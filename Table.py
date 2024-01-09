@@ -112,8 +112,22 @@ class Table:
     def replace_cell(self, row, col, replace=None):
         if "row" in self.header:
             row += 1
+        if "col" in self.header:
+            col += 1
         self.content[row][col] = self.replace_empty if replace == None else replace
 
+    def swap_cols_rows(self):
+        if "row" in self.header and "col" not in self.header:
+            self.header.pop("row", None)
+            self.header["col"] = self.content[0]
+        elif "col" in self.header and "row" not in self.header:
+            self.header.pop("col", None)
+            self.header["row"] = self.content[0]
+        
+
+        self.content = list(map(list, zip(*self.content)))
+    
+    
     def main(self):
 
         if self.orientation not in ["left", "right"]:
@@ -131,7 +145,20 @@ class Table:
             if len(row) > self.columns: 
                 self.columns = len(row)
 
-        if "row" in self.header and self.header_in_content is False:
+        if "row" and "col" in self.header and self.header_in_content is False:
+            if self.header["row"] == []:
+                self.header["row"] = [""] + [f"{index+1}." for index in range(self.columns)]
+                self.rows += 1
+            if self.header["col"] == []:
+                self.header["col"] = [f"{index+1}." for index in range(self.columns)]
+                self.columns += 1
+            self.content = [self.header["row"]] + self.content
+            
+            for index, i in enumerate(self.header["col"]):
+                self.content[index+1] = [i] + self.content[index+1]
+
+
+        elif "row" in self.header and self.header_in_content is False:
             if self.header["row"] == []:
                 self.header["row"] = [f"{index}." for index in range(self.columns)]
                 self.rows += 1
@@ -179,7 +206,10 @@ class Table:
             if column_index == len(self.max_chars) - 1:  
                 print("╗")
             else:
-                print("╤", end="")  
+                if "col" in self.header  and column_index == 0:
+                    print("╦", end="")
+                else:
+                    print("╤", end="")  
     
             column_index += 1  
 
@@ -209,7 +239,12 @@ class Table:
                 if column_index == self.columns - 1: 
                     print("║") 
                 else:
-                    print("│", end="") 
+                    if "col" in self.header and column_index == 0:
+                        line = "║"
+                    else:
+                        line = "│" 
+                    
+                    print(line, end="")
 
                 column_index += 1  
             
@@ -236,13 +271,22 @@ class Table:
             column_index = 0
 
             for column in self.max_chars: 
-                print(connection * self.space_left, end="") 
+                
+                print(connection * self.space_left, end="")
                 print(column * connection, end="") 
                 print(connection * self.space_right, end="") 
                 if column_index == len(self.max_chars) - 1: 
                     print(right_border)
                 else:
-                    print(cross_connection, end="") 
+                    if "col" in self.header and column_index == 0:
+                        if row_index == self.rows - 1:
+                            print("╩", end="")
+                        elif "row" in self.header and row_index == 0:
+                            print("╬", end="")
+                        else:
+                            print("╫", end="")
+                    else:
+                        print(cross_connection, end="") 
 
                 column_index += 1
 
