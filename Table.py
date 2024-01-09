@@ -139,7 +139,7 @@ class Table:
         self.content = list(map(list, zip(*self.content)))
 
     
-   def change_header(self, headers, type):
+    def change_header(self, headers, type):
         self.header_action = "update"
         if type == "row":
             self.og_header_row = headers
@@ -238,7 +238,7 @@ class Table:
                 else:
                     print("╤", end="")  
             
-           column_index += 1  
+            column_index += 1  
 
         row_index = 0  
         
