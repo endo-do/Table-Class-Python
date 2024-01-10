@@ -183,20 +183,7 @@ class Table:
         self.header_action_row = "update"
         self.content = list(map(list, zip(*self.content)))
 
-    
-    def change_header(self, headers, type):
-        self.header_action = "update"
         
-        if type == "row":
-            self.og_header_row = headers
-        
-        elif type == "col":
-            self.og_header_col = headers
-        
-        else:
-            self.header_action = "nothing"
-    
-    
     def main(self):
         
         if self.orientation not in ["left", "right"]:
