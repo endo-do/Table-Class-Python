@@ -1,0 +1,4 @@
+1. [Github][Repository]: https://github.com/endo-do/Terminal-Table-Python/blob/main/Table.py
+2. [Github][Project]: https://github.com/users/endo-do/projects/3
+
+3. [Wikipedia][Box Drawing Character]: https://en.wikipedia.org/wiki/Box-drawing_character
