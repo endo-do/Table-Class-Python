@@ -22,8 +22,8 @@ def restructure(data, structure, fill_with_empty_columns, fill_with_empty_rows, 
                     if i not in columns:
                         data[i] = ""
 
-        data = dict(sorted(data.items()))
-        data = [i for i in list(data.values())]
+            data = dict(sorted(data.items()))
+            data = [i for i in list(data.values())]
             
         return data
     
@@ -178,6 +178,29 @@ class Table:
         self.header_action_row = "update"
 
 
+    def remove_row(self, index):
+        self.content.pop(index)
+        self.header_action_row = "update"
+        self.header_action_col = "update"
+
+
+    def remove_column(self, index):
+        for i in self.content:
+            i.pop(index)
+        self.header_action_row = "update"
+        self.header_action_col = "update"
+
+
+    def replace_cell(self, row, col, replace=None, ignore_header=True):
+        if replace == None:
+            replace = self.replace_cell
+        if "row" in self.header and ignore_header:
+            row += 1
+        if "col" in self.header and ignore_header:
+            col += 1
+        self.content[row][col] = replace
+
+
     def swap_cols_rows(self):
         self.header_action_col = "update"
         self.header_action_row = "update"
@@ -202,11 +225,12 @@ class Table:
                 self.content.pop(0)
                 self.header["row"] = self.og_header_row
                 self.header_action_row = "insert"
-            
+
             if self.header_action_row == "insert":
-                
+                        
+                self.columns = 0
                 for row in self.content:
-                    
+
                     if len(row) > self.columns: 
                         self.columns = len(row)
 
@@ -214,7 +238,7 @@ class Table:
                     
                     if "col" in self.header:
                         self.header["row"] = [f"{index+1}." for index in range(0, self.columns)]
-                    
+
                     else:
                         self.header["row"] = [f"{index+1}." for index in range(0, self.columns)]
                 
@@ -225,7 +249,7 @@ class Table:
                         for i in range(len(self.content) - len(self.header["row"])):
                             self.header["row"].append("")
                 
-            self.content = [self.header["row"][:self.columns]] + self.content
+                self.content = [self.header["row"][:self.columns]] + self.content
 
         if "col" in self.header:
             
@@ -240,13 +264,13 @@ class Table:
             if self.header_action_col == "insert":
             
                 if self.header["col"] == []:
-            
+                    
                     if "row" in self.header:
                         self.header["col"] = [""] + [f"{index+1}." for index in range(0, len(self.content) - 1)]
-            
+
                     else:
                         self.header["col"] = [""] + [f"{index+1}." for index in range(0, len(self.content))]
-            
+                    
                 else:
 
                     if len(self.header["col"]) < len(self.content):
@@ -261,11 +285,12 @@ class Table:
         self.header_action_row = "nothing"
         
         self.rows = len(self.content)
+        self.columns = 0
         for row in self.content:
-            
+
             if len(row) > self.columns: 
                 self.columns = len(row)
-
+        
         for index, row in enumerate(self.content):
             
             if row == []:
