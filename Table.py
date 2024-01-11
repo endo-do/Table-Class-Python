@@ -3,127 +3,137 @@ def sort_dict(d):
 
 
 def restructure(data, structure, fill_with_empty_columns, fill_with_empty_rows, empty_dicts, empty_lists, empty_cells, replace_empty):
-    str1 = type(data) 
     
-    if str1 is list:
-        str2 = type(data[0]) 
+    if data in empty_lists or data in empty_dicts:
+        return [replace_empty]
     
-    elif str1 is dict:
-        str2 = type(next(iter(data.values()))) 
-    
-    if structure == "list":    
-        data_structure = str1.__name__
 
-        if data_structure == "dict":            
-            columns = list(data.keys())
+    else:
+        str1 = type(data) 
+        
+        if str1 is list:
+            str2 = type(data[0]) 
+        
+        elif str1 is dict:
+            str2 = type(next(iter(data.values()))) 
+        
+        if structure == "list":    
+            data_structure = str1.__name__
 
-            if len(columns) >= 2:
-                for i in range(columns[0], columns[-1]):
-                    if i not in columns:
-                        data[i] = ""
+            if data_structure == "dict":            
+                columns = list(data.keys())
 
-            data = dict(sorted(data.items()))
-            data = [i for i in list(data.values())]
-            
-        return data
-    
-    if structure == "list_in_list":
-        data_structure = f"{str2.__name__}_in_{str1.__name__}"
+                if len(columns) >= 2:
+                    for i in range(columns[0], columns[-1]):
+                        if i not in columns:
+                            data[i] = replace_empty
 
-        if data_structure == "dict_in_list":
-            
-            if fill_with_empty_rows:
-                rows = [key for d in data for key in d]
-                for row in range(rows[0], rows[-1]):
-                    if row not in rows:
-                        data.append({row:[]})
-            
-            new_content = []
-            data = sorted(data, key=lambda d: next(iter(d)))
-            
-            for line in data:
+                data = dict(sorted(data.items()))
+                data = [i for i in list(data.values())]
                 
-                if any(str(val) in empty_dicts for val in line.values()):
-                    new_content.append([""])
+            for index, i in enumerate(data):
+                if i in empty_cells:
+                    data[index] = replace_empty
+
+            return data
+        
+        if structure == "list_in_list":
+            data_structure = f"{str2.__name__}_in_{str1.__name__}"
+
+            if data_structure == "dict_in_list":
                 
-                else:
-                    new_content.extend([char for char in line.values()])
-            
-            data = new_content
+                if fill_with_empty_rows:
+                    rows = [key for d in data for key in d]
+                    for row in range(rows[0], rows[-1]):
+                        if row not in rows:
+                            data.append({row:[]})
+                
+                new_content = []
+                data = sorted(data, key=lambda d: next(iter(d)))
+                print(data)
+                for line in data:
+                    
+                    if any(str(val) in empty_dicts for val in line.values()):
+                        new_content.append([replace_empty])
+                    
+                    else:
+                        new_content.extend([char for char in line.values()])
+                
+                data = new_content
 
-        elif data_structure == "list_in_dict":
-            
-            if fill_with_empty_rows:
-                rows = list(data.keys())
-            
-                for row in range(rows[0], rows[-1]):
-                    if row not in rows:
-                        data[row] = []
-            
-            new_content = []
-            data = dict(sorted(data.items()))
-            
-            for line in data.values():
-            
-                if line in empty_lists:
-                    new_content.append(replace_empty)
-            
-                else:
-                    new_content.append(line)
-            
-            data = new_content
+            elif data_structure == "list_in_dict":
+                
+                if fill_with_empty_rows:
+                    rows = list(data.keys())
+                
+                    for row in range(rows[0], rows[-1]):
+                        if row not in rows:
+                            data[row] = []
+                
+                new_content = []
+                data = dict(sorted(data.items()))
+                
+                for line in data.values():
+                
+                    if line in empty_lists:
+                        new_content.append([replace_empty])
+                
+                    else:
+                        new_content.append(line)
+                
+                data = new_content
 
-        elif data_structure == "dict_in_dict":
-            
-            if fill_with_empty_rows:
-                rows = list(data.keys())
-            
-                for row in range(rows[0], rows[-1]):
-            
-                    if row not in rows:
-                        data[row] = {}
-            
-            if fill_with_empty_columns:
-            
-                for key, row in data.items():
-                    columns = list(row.keys())
-            
-                    if len(columns) >= 2:
-            
-                        for col in range(columns[0], columns[-1]):
-            
-                            if col not in columns:
-                                data[key][col] = ""
-            
-            new_content = []
-            data = {k: dict(sorted(v.items())) if isinstance(v, dict) else v for k, v in sorted(data.items())}
-            
-            for line in data:
-            
-                if data[line] in empty_dicts:
-                    new_line = [""]
-            
-                else:
-                    new_line = []
-            
-                    for cell in data[line].values():
-            
-                        if str(cell) in empty_cells:
-                            cell = replace_empty
-            
-                        new_line.append(cell)
-            
-                new_content.append(new_line)
-            
-            data = new_content
+            elif data_structure == "dict_in_dict":
+                
+                if fill_with_empty_rows:
+                    rows = list(data.keys())
+                
+                    for row in range(rows[0], rows[-1]):
+                
+                        if row not in rows:
+                            data[row] = {}
+                
+                if fill_with_empty_columns:
+                
+                    for key, row in data.items():
+                        columns = list(row.keys())
+                
+                        if len(columns) >= 2:
+                
+                            for col in range(columns[0], columns[-1]):
+                
+                                if col not in columns:
+                                    data[key][col] = ""
+                
+                new_content = []
+                data = {k: dict(sorted(v.items())) if isinstance(v, dict) else v for k, v in sorted(data.items())}
+                print(data)
+                for line in data:
+                
+                    if data[line] in empty_dicts:
+                        new_line = [replace_empty]
+                
+                    else:
+                        new_line = []
+                
+                        for cell in data[line].values():
+                
+                            if str(cell) in empty_cells:
+                                cell = replace_empty
+                
+                            new_line.append(cell)
+                
+                    new_content.append(new_line)
+                
+                data = new_content
 
-        return data
+            return data
 
 
 
 class Table:
     def __init__(self, content, space_left=1, space_right=1, orientation="left", 
-                empty_cells=["", "#empty"], empty_lists=["", "#empty"], empty_dicts=["", "#empty"], replace_empty="",
+                empty_cells=["", "#empty"], empty_lists=[[], [""], ["#empty"]], empty_dicts=[{""}, {"#empty"}], replace_empty="",
                 header={"row":[]}, fill_with_empty_rows=True, fill_with_empty_columns=True):
         
         self.content = content 
@@ -156,13 +166,13 @@ class Table:
         if "col" in self.header:
             row.insert(0, "")
         
-        self.content.insert(index if index != "end" else len(self.content), row)
+        self.content.insert(index , row)
         self.header_action_row = "update"
         self.header_action_col = "update"
 
    
     def add_column(self, index, column):
-        
+        print(1)
         if "col" in self.header:
             index += 1
         
@@ -172,19 +182,23 @@ class Table:
             column.insert(0, "")
         
         for i in range(len(column)):
-            self.content[i].insert(index if index != "end" else len(self.content[i]), column[i])
+            self.content[i].insert(index, column[i])
         
         self.header_action_col = "update"
         self.header_action_row = "update"
 
 
     def remove_row(self, index):
+        if "row" in self.header:
+            index += 1
         self.content.pop(index)
         self.header_action_row = "update"
         self.header_action_col = "update"
 
 
     def remove_column(self, index):
+        if "col" in self.header:
+            index += 1
         for i in self.content:
             i.pop(index)
         self.header_action_row = "update"
