@@ -2,7 +2,7 @@ def sort_dict(d):
    return {k: sort_dict(v) if isinstance(v, dict) else v for k, v in sorted(d.items())}
 
 
-def restructure(data, structure, fill_with_empty_columns, fill_with_empty_rows, empty_dicts, empty_lists, empty_cells, replace_empty):
+def restructure(data, structure, fill_with_empty_columns=None, fill_with_empty_rows=None, empty_dicts=None, empty_lists=None, empty_cells=None, replace_empty=None):
     
     if data in empty_lists or data in empty_dicts:
         return [replace_empty]
@@ -22,6 +22,7 @@ def restructure(data, structure, fill_with_empty_columns, fill_with_empty_rows, 
 
             if data_structure == "dict":            
                 columns = list(data.keys())
+                columns = sorted(columns)
 
                 if len(columns) >= 2:
                     for i in range(columns[0], columns[-1]):
@@ -44,13 +45,14 @@ def restructure(data, structure, fill_with_empty_columns, fill_with_empty_rows, 
                 
                 if fill_with_empty_rows:
                     rows = [key for d in data for key in d]
+                    rows = sorted(rows)
                     for row in range(rows[0], rows[-1]):
                         if row not in rows:
                             data.append({row:[]})
                 
                 new_content = []
                 data = sorted(data, key=lambda d: next(iter(d)))
-                print(data)
+
                 for line in data:
                     
                     if any(str(val) in empty_dicts for val in line.values()):
@@ -65,7 +67,7 @@ def restructure(data, structure, fill_with_empty_columns, fill_with_empty_rows, 
                 
                 if fill_with_empty_rows:
                     rows = list(data.keys())
-                
+                    rows = sorted(rows)
                     for row in range(rows[0], rows[-1]):
                         if row not in rows:
                             data[row] = []
@@ -87,7 +89,7 @@ def restructure(data, structure, fill_with_empty_columns, fill_with_empty_rows, 
                 
                 if fill_with_empty_rows:
                     rows = list(data.keys())
-                
+                    rows = sorted(rows)
                     for row in range(rows[0], rows[-1]):
                 
                         if row not in rows:
@@ -107,7 +109,7 @@ def restructure(data, structure, fill_with_empty_columns, fill_with_empty_rows, 
                 
                 new_content = []
                 data = {k: dict(sorted(v.items())) if isinstance(v, dict) else v for k, v in sorted(data.items())}
-                print(data)
+
                 for line in data:
                 
                     if data[line] in empty_dicts:
@@ -148,8 +150,9 @@ class Table:
         self.fill_with_empty_rows = fill_with_empty_rows
         self.fill_with_empty_columns = fill_with_empty_columns
         self.orientation = orientation
-        self.og_header_col = self.header["col"] if "col" in self.header else []
-        self.og_header_row = self.header["row"] if "row" in self.header else []
+        self.saved_header = {}
+        for i in self.header:
+            self.saved_header[i] = self.header[i]
         self.rows = 0 
         self.columns = 0  
         self.header_action_col = "insert"
@@ -158,23 +161,39 @@ class Table:
    
     def add_row(self, index, row):
         
-        if "row" in self.header:
-            index += 1
+        if index == -1:
+            index = "end"
+        else:
+            if index < 0:
+                index += 1
+            
+            if "row" in self.header:
+                index += 1
         
         row = restructure(row, "list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
         
         if "col" in self.header:
             row.insert(0, "")
         
-        self.content.insert(index , row)
+        if index == "end":
+            self.content.append(row)
+        else:
+            self.content.insert(index , row)
         self.header_action_row = "update"
         self.header_action_col = "update"
 
    
     def add_column(self, index, column):
-        print(1)
-        if "col" in self.header:
-            index += 1
+
+        if index == -1:
+            index = "end"
+        
+        else:
+            if index < 0:
+                index += 1
+
+            if "col" in self.header:
+                index += 1
         
         column = restructure(column, "list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
         
@@ -182,7 +201,10 @@ class Table:
             column.insert(0, "")
         
         for i in range(len(column)):
-            self.content[i].insert(index, column[i])
+            if index == "end":
+                self.content.append(column[i])
+            else:
+                self.content[i].insert(index, column[i])
         
         self.header_action_col = "update"
         self.header_action_row = "update"
@@ -220,13 +242,41 @@ class Table:
         self.header_action_row = "update"
         self.content = list(map(list, zip(*self.content)))
 
-        
+    
+    def change_header(self, header):
+        for h in list(header.keys()):
+            self.saved_header[h] = restructure(header[h], "list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
+            if h == "row":
+                self.header_action_row = "update"
+            if h == "col":
+                self.header_action_col = "update"
+
+    
+    def remove_header(self, header):
+        if header in self.header:
+            del self.header[header]
+            if header == "row":
+                self.content.pop(0)
+            if header == "col":
+                for i in self.content:
+                    i.pop(0)
+    
+    def add_header(self, header):
+        for i in list(header.keys()):
+            self.saved_header[i] = header[i]
+            self.header[i] = header[i]             
+            if i == "col":
+                self.header_action_col = "insert"
+            elif i == "row":   
+                self.header_action_row = "insert"
+
+
     def main(self):
         
         if self.orientation not in ["left", "right"]:
             self.orientation = "left"
         
-        for arg in [self.header, self.fill_with_empty_columns, self.fill_with_empty_rows]:
+        for arg in [self.fill_with_empty_columns, self.fill_with_empty_rows]:
         
             if arg != True and arg != False:
                 arg = False
@@ -237,64 +287,59 @@ class Table:
             
             if self.header_action_row == "update":
                 self.content.pop(0)
-                self.header["row"] = self.og_header_row
+                self.header["row"] = self.saved_header["row"]
                 self.header_action_row = "insert"
 
             if self.header_action_row == "insert":
-                        
                 self.columns = 0
+                
                 for row in self.content:
 
                     if len(row) > self.columns: 
                         self.columns = len(row)
 
-                if self.header["row"] == []:
-                    
-                    if "col" in self.header:
-                        self.header["row"] = [f"{index+1}." for index in range(0, self.columns)]
+                if self.header["row"] == []:    
+                    self.header["row"] = [f"{index+1}." for index in range(0, self.columns)]
 
-                    else:
-                        self.header["row"] = [f"{index+1}." for index in range(0, self.columns)]
-                
                 else: 
                     
-                    if len(self.header["row"]) < self.columns:
-                    
-                        for i in range(len(self.content) - len(self.header["row"])):
-                            self.header["row"].append("")
-                
-                self.content = [self.header["row"][:self.columns]] + self.content
+                    if len(self.header["row"]) < self.columns -1 if "col" in self.header else self.columns:
 
+                        for i in range(self.columns -1 if "col" in self.header else self.columns - len(self.header["row"])):
+                            self.header["row"].append("")
+             
+                self.content = [self.header["row"]] + self.content
+        
         if "col" in self.header:
-            
+
             if self.header_action_col == "update":
             
                 for i in self.content:
-                    i.pop(0) if i != self.content[0] else i.pop(-1)
-            
-                self.header["col"] = self.og_header_col
+                    i.pop(0)
+                
+                self.header["col"] = self.saved_header["col"]
                 self.header_action_col = "insert"
-            
+
             if self.header_action_col == "insert":
             
                 if self.header["col"] == []:
-                    
-                    if "row" in self.header:
-                        self.header["col"] = [""] + [f"{index+1}." for index in range(0, len(self.content) - 1)]
+                    self.header["col"] = [f"{index+1}." for index in range(0, len(self.content))]
 
-                    else:
-                        self.header["col"] = [""] + [f"{index+1}." for index in range(0, len(self.content))]
-                    
                 else:
 
                     if len(self.header["col"]) < len(self.content):
             
                         for i in range(len(self.content) - len(self.header["col"])):
                             self.header["col"].append("")
+
+                
+                if "row" in self.header:
+                    self.header["col"].pop(-1)
+                    self.header["col"].insert(0, "")
                 
                 for index, i in enumerate(self.header["col"]):
                     self.content[index] = [i] + self.content[index]
-    
+
         self.header_action_col = "nothing"
         self.header_action_row = "nothing"
         
