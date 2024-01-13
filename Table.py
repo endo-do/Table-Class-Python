@@ -488,3 +488,7 @@ class Table:
                 column_index += 1
 
             row_index += 1
+
+
+Table1 = Table(content=[[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]])
+Table1.main()
