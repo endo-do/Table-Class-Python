@@ -134,7 +134,7 @@ def restructure(data, structure, fill_with_empty_columns=None, fill_with_empty_r
 
 
 class Table:
-    def __init__(self, content, space_left=1, space_right=1, orientation="left", 
+    def __init__(self, content, space_left=1, space_right=1, orientation="left", min_width=None, same_sized_cols=True, 
                 empty_cells=["", "#empty"], empty_lists=[[], [""], ["#empty"]], empty_dicts=[{""}, {"#empty"}], replace_empty="",
                 header={"row":[]}, fill_with_empty_rows=True, fill_with_empty_columns=True):
         
@@ -146,6 +146,8 @@ class Table:
         self.empty_lists = empty_lists
         self.empty_dicts = empty_dicts
         self.replace_empty = replace_empty
+        self.min_width = min_width
+        self.same_sized_cols = same_sized_cols
         self.header = header
         self.fill_with_empty_rows = fill_with_empty_rows
         self.fill_with_empty_columns = fill_with_empty_columns
@@ -276,7 +278,7 @@ class Table:
         if self.orientation not in ["left", "right"]:
             self.orientation = "left"
         
-        for arg in [self.fill_with_empty_columns, self.fill_with_empty_rows]:
+        for arg in [self.fill_with_empty_columns, self.fill_with_empty_rows, self.same_sized_cols]:
         
             if arg != True and arg != False:
                 arg = False
@@ -386,6 +388,14 @@ class Table:
 
         column_index = 0  
         
+        if self.same_sized_cols:
+            self.max_chars = [max(self.max_chars) for i in self.max_chars]
+        
+        if self.min_width != None:
+            for index, i in enumerate(self.max_chars):
+                if self.min_width > int(i):
+                    self.max_chars[index] = self.min_width
+
         print("╔", end="") 
         for column in self.max_chars:
             print("═" * self.space_left, end="")  
@@ -397,7 +407,7 @@ class Table:
             
             else:
             
-                if "col" in self.header  and column_index == 0:
+                if "col" in self.header and column_index == 0:
                     print("╦", end="")
             
                 else:
@@ -490,5 +500,5 @@ class Table:
             row_index += 1
 
 
-Table1 = Table(content=[[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]])
+Table1 = Table(content=[[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]], same_sized_cols=True)
 Table1.main()
