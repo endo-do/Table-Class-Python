@@ -1,5 +1,5 @@
 # Terminal Table Python
-A simple Python Class for displaying information in the terminal in form of a table.
+A simple Python Class for displaying information as a customizable table in the console
 
 ## All Links related to this Project:
 
