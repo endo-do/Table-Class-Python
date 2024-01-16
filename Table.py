@@ -243,6 +243,16 @@ class Table:
     def swap_cols_rows(self):
         self.header_action_col = "update"
         self.header_action_row = "update"
+        if "row" in self.header:
+            if "col" in self.header:
+                col = self.header["col"]
+                self.header["col"] = self.header["row"]
+                self.header["row"] = col
+            else:
+                self.header["col"] = self.header["row"]
+                self.saved_header["col"] = self.header["row"]
+                del self.header["row"]
+        print(self.header)
         self.content = list(map(list, zip(*self.content)))
 
     
@@ -525,5 +535,5 @@ class Table:
             row_index += 1
 
 
-Table1 = Table(content=[[1, 2, 3, 4], [5, 6, 777777777, 8], [9, 10, 11, 12]], same_sized_cols=False, max_width=3)
+Table1 = Table(content=[[1, 2, 3, 4], [5, 6, 777, 8], [9, 10, 11, 12]])
 Table1.main()
