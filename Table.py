@@ -7,7 +7,6 @@ def restructure(data, structure, fill_with_empty_columns=None, fill_with_empty_r
     if data in empty_lists or data in empty_dicts:
         return [replace_empty]
     
-
     else:
         str1 = type(data) 
         
