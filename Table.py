@@ -247,12 +247,18 @@ class Table:
             if "col" in self.header:
                 col = self.header["col"]
                 self.header["col"] = self.header["row"]
+                self.saved_header["col"] = self.header["row"]
                 self.header["row"] = col
+                self.saved_header["row"] = col
             else:
                 self.header["col"] = self.header["row"]
                 self.saved_header["col"] = self.header["row"]
                 del self.header["row"]
-        print(self.header)
+        elif "col" in self.header:
+            self.header["row"] = self.header["col"]
+            self.saved_header["row"] = self.header["col"]
+            del self.header["col"]
+
         self.content = list(map(list, zip(*self.content)))
 
     
@@ -266,6 +272,7 @@ class Table:
 
     
     def remove_header(self, header):
+        # if header == "all":
         if header in self.header:
             del self.header[header]
             if header == "row":
@@ -535,5 +542,7 @@ class Table:
             row_index += 1
 
 
-Table1 = Table(content=[[1, 2, 3, 4], [5, 6, 777, 8], [9, 10, 11, 12]])
+Table1 = Table(content=[[1, 2, 3, 4], [5, 6, 777, 8], [9, 10, 11, 12]], header={"col":[], "row":[]})
+Table1.main()
+Table1.swap_cols_rows()
 Table1.main()
