@@ -206,8 +206,8 @@ class Table:
         self.replace_empty = replace_empty 
         self.header = header 
         
-        self.header_action_col = "nothing"
-        self.header_action_row = "nothing"    
+        self.header_action_col = "insert"
+        self.header_action_row = "insert"    
 
    
     def add_row(self, index, row):
@@ -308,17 +308,25 @@ class Table:
     
     def change_header(self, header):
         for h_type in list(header.keys()):
-            if h_type == "row":
-                if "row" not in self.header:
-                    self.header_action_row = "insert"
-                else:
-                    self.header_action_row = "update"
-            if h_type == "col":
-                if "col" not in self.header:               
-                    self.header_action_col = "insert"
-                else:
-                    self.header_action_col = "update"
-            self.header[h_type] = restructure(header[h_type], "list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
+            if header[h_type] == "clear":
+                del self.header[h_type]
+                if h_type == "row":
+                    self.content.pop(0)
+                if h_type == "col":
+                    for i in self.content:
+                        i.pop(0)
+            else:
+                if h_type == "row":
+                    if "row" not in self.header:
+                        self.header_action_row = "insert"
+                    else:
+                        self.header_action_row = "update"
+                if h_type == "col":
+                    if "col" not in self.header:               
+                        self.header_action_col = "insert"
+                    else:
+                        self.header_action_col = "update"
+                self.header[h_type] = restructure(header[h_type], "list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
 
 
     
@@ -410,7 +418,7 @@ class Table:
 
         self.header_action_col = "nothing"
         self.header_action_row = "nothing"
-        
+
         self.rows = len(self.content)
         self.columns = 0
         for row in self.content:
