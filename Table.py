@@ -306,9 +306,9 @@ class Table:
         self.content = list(map(list, zip(*self.content)))
 
     
-    def change_header(self, header):
+    def conf_header(self, header):
         for h_type in list(header.keys()):
-            if header[h_type] == "clear":
+            if header[h_type] in ["clear", "delete", "del"]:
                 del self.header[h_type]
                 if h_type == "row":
                     self.content.pop(0)
@@ -328,17 +328,6 @@ class Table:
                         self.header_action_col = "update"
                 self.header[h_type] = restructure(header[h_type], "list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
 
-
-    
-    def remove_header(self, header):
-        # if header == "all":
-        if header in self.header:
-            del self.header[header]
-            if header == "row":
-                self.content.pop(0)
-            if header == "col":
-                for i in self.content:
-                    i.pop(0)
     
     def add_header(self, header):
         for i in list(header.keys()):
