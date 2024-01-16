@@ -134,7 +134,7 @@ def restructure(data, structure, fill_with_empty_columns=None, fill_with_empty_r
 
 
 class Table:
-    def __init__(self, content, space_left=1, space_right=1, orientation="left", min_width=None, same_sized_cols=True, 
+    def __init__(self, content, space_left=1, space_right=1, orientation="left", min_width=None, max_width=None, same_sized_cols=True, 
                 empty_cells=["", "#empty"], empty_lists=[[], [""], ["#empty"]], empty_dicts=[{""}, {"#empty"}], replace_empty="",
                 header={"row":[]}, fill_with_empty_rows=True, fill_with_empty_columns=True):
         
@@ -147,6 +147,7 @@ class Table:
         self.empty_dicts = empty_dicts
         self.replace_empty = replace_empty
         self.min_width = min_width
+        self.max_width = max_width
         self.same_sized_cols = same_sized_cols
         self.header = header
         self.fill_with_empty_rows = fill_with_empty_rows
@@ -388,14 +389,19 @@ class Table:
 
         column_index = 0  
         
-        if self.same_sized_cols:
-            self.max_chars = [max(self.max_chars) for i in self.max_chars]
-        
         if self.min_width != None:
             for index, i in enumerate(self.max_chars):
                 if self.min_width > int(i):
                     self.max_chars[index] = self.min_width
+        
+        if self.max_width != None:
+            for index, i in enumerate(self.max_chars):
+                if self.max_width < int(i):
+                    self.max_chars[index] = self.max_width
 
+        if self.same_sized_cols:
+            self.max_chars = [max(self.max_chars) for i in self.max_chars]
+        
         print("╔", end="") 
         for column in self.max_chars:
             print("═" * self.space_left, end="")  
@@ -416,7 +422,7 @@ class Table:
             column_index += 1  
 
         row_index = 0  
-        
+
         for row in range(self.rows): 
             print("║", end="") 
             column_index = 0
@@ -425,6 +431,25 @@ class Table:
                 spacebar_counter = self.max_chars[column] - len(str(self.content[row][column])) 
                 text = str(self.content[row][column])
 
+                if len(text) > self.max_chars[column_index]:
+
+                    if self.max_chars[column_index] == 2:
+                        text = ".."
+                    elif int(self.max_chars[column_index]) == 3:
+                        text = [i for i in text]
+                        text = text[0]
+                        text += ("..")
+                    
+                    elif int(self.max_chars[column_index]) >= 3:
+                        text = [i for i in text]
+                        text = text[:int(self.max_chars[column_index])-2]
+                        text.append("..")
+                        textstr = ""
+                        for i in text:
+                            textstr += i
+                        text = textstr
+                    spacebar_counter = 0
+                
                 if self.orientation == "left": 
                     content = text + str(spacebar_counter * " ")  
                 
@@ -500,5 +525,5 @@ class Table:
             row_index += 1
 
 
-Table1 = Table(content=[[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]], same_sized_cols=True)
+Table1 = Table(content=[[1, 2, 3, 4], [5, 6, 777777777, 8], [9, 10, 11, 12]], same_sized_cols=False, max_width=3)
 Table1.main()
