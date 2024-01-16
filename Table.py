@@ -1,47 +1,76 @@
-def sort_dict(d):
-   return {k: sort_dict(v) if isinstance(v, dict) else v for k, v in sorted(d.items())}
+### General Functions
 
-
+# General function for restructuring all kinds of data structures
 def restructure(data, structure, fill_with_empty_columns=None, fill_with_empty_rows=None, empty_dicts=None, empty_lists=None, empty_cells=None, replace_empty=None):
     
-    if data in empty_lists or data in empty_dicts:
+    """
+    Restructures the given data based on the specified structure.
+
+    Args:
+    - data: The data to be restructured.
+    - structure: The desired form in which data will be restructured (e.g., "list").
+    - fill_with_empty_columns: If True, adds columns that are not specified, otherwise skips them during table printing.
+    - fill_with_empty_rows: [Commentary missing]
+    - empty_dicts: Specifies how an empty dict looks like.
+    - empty_lists: [Commentary missing]
+    - empty_cells: Specifies how an empty cell looks like.
+    - replace_empty: Content to replace when an empty dict/list/cell is specified.
+
+    Returns:
+    - The restructured and cleaned data.
+    """
+
+    # if the data is an empty list return it empty
+    if data in empty_lists:
         return [replace_empty]
     
     else:
-        str1 = type(data) 
         
-        if str1 is list:
-            str2 = type(data[0]) 
+        # get the structure of the data with the type() function
+        data_type = type(data) 
+        if data_type is list:
+            element_type = type(data[0]) 
+        elif data_type is dict:
+            element_type = type(next(iter(data.values()))) 
         
-        elif str1 is dict:
-            str2 = type(next(iter(data.values()))) 
-        
+        # restructers the data into a list
         if structure == "list":    
-            data_structure = str1.__name__
+            data_structure = data_type.__name__
 
+            # if data is a dictionary
             if data_structure == "dict":            
+
+                # sorts all the keys that represent the columns in ascending order and saves them
                 columns = list(data.keys())
                 columns = sorted(columns)
 
-                if len(columns) >= 2:
-                    for i in range(columns[0], columns[-1]):
-                        if i not in columns:
-                            data[i] = replace_empty
+                # adds empty columns if specified in fill_with_empty_columns
+                if fill_with_empty_columns:
+                    if len(columns) >= 2:
+                        for i in range(columns[0], columns[-1]):
+                            if i not in columns:
+                                data[i] = replace_empty
 
+                # sorts the dictionary and restructeres it to a list
                 data = dict(sorted(data.items()))
                 data = [i for i in list(data.values())]
-                
+            
+            # goes through all cells to replace any cell that was specified as empty with the given replace_empty var
             for index, i in enumerate(data):
                 if i in empty_cells:
                     data[index] = replace_empty
 
+            # returns the restructured and cleaned data as a list
             return data
         
+        # restructures the data into a list_in_list structure
         if structure == "list_in_list":
-            data_structure = f"{str2.__name__}_in_{str1.__name__}"
+            data_structure = f"{element_type.__name__}_in_{data_type.__name__}"
 
+            # if the data is a dict_in_list structure
             if data_structure == "dict_in_list":
                 
+                # adds empty rows if specified in fill_with_empty_rows
                 if fill_with_empty_rows:
                     rows = [key for d in data for key in d]
                     rows = sorted(rows)
@@ -49,21 +78,24 @@ def restructure(data, structure, fill_with_empty_columns=None, fill_with_empty_r
                         if row not in rows:
                             data.append({row:[]})
                 
+                # sorts data and creates a var for the restructured data
                 new_content = []
                 data = sorted(data, key=lambda d: next(iter(d)))
 
-                for line in data:
-                    
+                # restructures the data and cleans it
+                for line in data:    
                     if any(str(val) in empty_dicts for val in line.values()):
                         new_content.append([replace_empty])
-                    
                     else:
                         new_content.extend([char for char in line.values()])
                 
+                # replaces the old data with the new sorted and cleaned data
                 data = new_content
 
+            # if the data is a list_in_dict structure
             elif data_structure == "list_in_dict":
                 
+                # ...
                 if fill_with_empty_rows:
                     rows = list(data.keys())
                     rows = sorted(rows)
@@ -71,94 +103,111 @@ def restructure(data, structure, fill_with_empty_columns=None, fill_with_empty_r
                         if row not in rows:
                             data[row] = []
                 
+                # ...
                 new_content = []
                 data = dict(sorted(data.items()))
                 
+                # ...
                 for line in data.values():
-                
                     if line in empty_lists:
                         new_content.append([replace_empty])
-                
                     else:
                         new_content.append(line)
                 
+                # ...
                 data = new_content
 
+            # if the data is a dict_in_dict structure
             elif data_structure == "dict_in_dict":
                 
+                # ...
                 if fill_with_empty_rows:
                     rows = list(data.keys())
                     rows = sorted(rows)
                     for row in range(rows[0], rows[-1]):
-                
                         if row not in rows:
                             data[row] = {}
                 
+                # ...
                 if fill_with_empty_columns:
-                
                     for key, row in data.items():
                         columns = list(row.keys())
-                
                         if len(columns) >= 2:
-                
                             for col in range(columns[0], columns[-1]):
-                
                                 if col not in columns:
-                                    data[key][col] = ""
+                                    data[key][col] = replace_empty
                 
+                # ...
                 new_content = []
                 data = {k: dict(sorted(v.items())) if isinstance(v, dict) else v for k, v in sorted(data.items())}
 
+                # ...
                 for line in data:
-                
                     if data[line] in empty_dicts:
                         new_line = [replace_empty]
-                
                     else:
                         new_line = []
-                
                         for cell in data[line].values():
-                
                             if str(cell) in empty_cells:
                                 cell = replace_empty
-                
                             new_line.append(cell)
-                
                     new_content.append(new_line)
                 
+                # ...
                 data = new_content
-
+            
+            # Goes through the data and replaces every cell that is specified as empty with the replace_empty var
+            new_content = []
+            for line in data: 
+                new_content.append([str(char) if char not in empty_cells else replace_empty for char in line])
+                data = new_content 
+            
+            # returns the restructured and cleaned data as a list_in_list
             return data
 
 
 
-class Table:
-    def __init__(self, content, space_left=1, space_right=1, orientation="left", min_width=None, max_width=None, same_sized_cols=True, 
-                empty_cells=["", "#empty"], empty_lists=[[], [""], ["#empty"]], empty_dicts=[{""}, {"#empty"}], replace_empty="",
-                header={"row":[]}, fill_with_empty_rows=True, fill_with_empty_columns=True):
+### The Table Class
         
+class Table:
+    def __init__(self, content, space_left=1, space_right=1, orientation="left", min_width=None, max_width=None, same_sized_cols=True,
+                fill_with_empty_rows=True, fill_with_empty_columns=True, empty_cells=["", "#empty"], empty_lists=[[], [""], ["#empty"]],
+                empty_dicts=[{""}, {"#empty"}], replace_empty="", header={"row":[]}): 
+        
+        """
+        - content: content of the table in a list_in_list, list_in_dict, dict_in_list or dict_in_dict structure
+        - space_left: int: space from the content of a cell to the border on the left side
+        - space_right: ... on the right side ...
+        - orientation: str: "left" or "right" | orientates the content to the left or to the right side of the cell
+        - min_width: int: minimum width of a cell. spaces will be added when to short
+        - max_width: int: maximum width of a cell. content will be shortened when to long
+        - same_sized_cols: bool: toggles same width for each column
+        - fill_with_empty_rows: bool: toggles filling empty rows for every not specified row in content
+        - fill_with_empty_columns: ... columns ... columns ...
+        - empty_cells: list: specifies what is considered as an empty cell
+        - empty_lists: ... list
+        - empty_dicts: ... dict
+        - replace_empty: str: replaces empty cells and the content of empty lists and dicts
+        - header: dict {header_type:[header]}: header_type: str: "row" or "col", "header": list or dict: content of the header
+        """
+    
         self.content = content 
         self.space_left = space_left 
         self.space_right = space_right 
         self.orientation = orientation 
-        self.empty_cells = empty_cells
-        self.empty_lists = empty_lists
-        self.empty_dicts = empty_dicts
-        self.replace_empty = replace_empty
-        self.min_width = min_width
-        self.max_width = max_width
-        self.same_sized_cols = same_sized_cols
-        self.header = header
-        self.fill_with_empty_rows = fill_with_empty_rows
-        self.fill_with_empty_columns = fill_with_empty_columns
-        self.orientation = orientation
-        self.saved_header = {}
-        for i in self.header:
-            self.saved_header[i] = self.header[i]
-        self.rows = 0 
-        self.columns = 0  
-        self.header_action_col = "insert"
-        self.header_action_row = "insert"    
+        self.min_width = min_width 
+        self.max_width = max_width 
+        self.same_sized_cols = same_sized_cols 
+        self.fill_with_empty_rows = fill_with_empty_rows 
+        self.fill_with_empty_columns = fill_with_empty_columns 
+        self.empty_cells = empty_cells 
+        self.empty_lists = empty_lists 
+        self.empty_dicts = empty_dicts 
+        self.replace_empty = replace_empty 
+        self.header = header 
+        
+        self.header_action_col = "nothing"
+        self.header_action_row = "nothing"    
 
    
     def add_row(self, index, row):
@@ -246,28 +295,31 @@ class Table:
             if "col" in self.header:
                 col = self.header["col"]
                 self.header["col"] = self.header["row"]
-                self.saved_header["col"] = self.header["row"]
                 self.header["row"] = col
-                self.saved_header["row"] = col
             else:
                 self.header["col"] = self.header["row"]
-                self.saved_header["col"] = self.header["row"]
                 del self.header["row"]
         elif "col" in self.header:
             self.header["row"] = self.header["col"]
-            self.saved_header["row"] = self.header["col"]
             del self.header["col"]
 
         self.content = list(map(list, zip(*self.content)))
 
     
     def change_header(self, header):
-        for h in list(header.keys()):
-            self.saved_header[h] = restructure(header[h], "list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
-            if h == "row":
-                self.header_action_row = "update"
-            if h == "col":
-                self.header_action_col = "update"
+        for h_type in list(header.keys()):
+            if h_type == "row":
+                if "row" not in self.header:
+                    self.header_action_row = "insert"
+                else:
+                    self.header_action_row = "update"
+            if h_type == "col":
+                if "col" not in self.header:               
+                    self.header_action_col = "insert"
+                else:
+                    self.header_action_col = "update"
+            self.header[h_type] = restructure(header[h_type], "list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
+
 
     
     def remove_header(self, header):
@@ -282,7 +334,6 @@ class Table:
     
     def add_header(self, header):
         for i in list(header.keys()):
-            self.saved_header[i] = header[i]
             self.header[i] = header[i]             
             if i == "col":
                 self.header_action_col = "insert"
@@ -306,7 +357,6 @@ class Table:
             
             if self.header_action_row == "update":
                 self.content.pop(0)
-                self.header["row"] = self.saved_header["row"]
                 self.header_action_row = "insert"
 
             if self.header_action_row == "insert":
@@ -325,7 +375,7 @@ class Table:
                     if len(self.header["row"]) < self.columns -1 if "col" in self.header else self.columns:
 
                         for i in range(self.columns -1 if "col" in self.header else self.columns - len(self.header["row"])):
-                            self.header["row"].append("")
+                            self.header["row"].append(self.replace_empty)
              
                 self.content = [self.header["row"]] + self.content
         
@@ -336,7 +386,6 @@ class Table:
                 for i in self.content:
                     i.pop(0)
                 
-                self.header["col"] = self.saved_header["col"]
                 self.header_action_col = "insert"
 
             if self.header_action_col == "insert":
@@ -349,12 +398,12 @@ class Table:
                     if len(self.header["col"]) < len(self.content):
             
                         for i in range(len(self.content) - len(self.header["col"])):
-                            self.header["col"].append("")
+                            self.header["col"].append(self.replace_empty)
 
                 
                 if "row" in self.header:
                     self.header["col"].pop(-1)
-                    self.header["col"].insert(0, "")
+                    self.header["col"].insert(0, self.replace_empty)
                 
                 for index, i in enumerate(self.header["col"]):
                     self.content[index] = [i] + self.content[index]
@@ -374,19 +423,12 @@ class Table:
             if row == []:
             
                 for i in range(self.columns):
-                    self.content[index] = ["" for i in range(self.columns)]
+                    self.content[index] = [self.replace_empty for i in range(self.columns)]
 
         for row in self.content:
             
             while len(row) < self.columns:
-                row.append("")
-
-        new_content = []
-        
-        for line in self.content: 
-            new_content.append([str(char) if char not in self.empty_cells else self.replace_empty for char in line])
-        
-        self.content = new_content 
+                row.append(self.replace_empty)
 
         self.max_chars = []
         
@@ -417,7 +459,10 @@ class Table:
 
         if self.same_sized_cols:
             self.max_chars = [max(self.max_chars) for i in self.max_chars]
-        
+
+        if "col" in self.header and "row" in self.header:
+            self.content[0][0] = ""
+
         print("╔", end="") 
         for column in self.max_chars:
             print("═" * self.space_left, end="")  
@@ -541,7 +586,5 @@ class Table:
             row_index += 1
 
 
-Table1 = Table(content=[[1, 2, 3, 4], [5, 6, 777, 8], [9, 10, 11, 12]], header={"col":[], "row":[]})
-Table1.main()
-Table1.swap_cols_rows()
+Table1 = Table(content=[[1, 2, 3, 4], [1, 11, 1, 111], [], [9 , 9, 9, 99]])
 Table1.main()
