@@ -1,6 +1,5 @@
 ### General Functions
 
-# General function for restructuring all kinds of data structures
 def restructure(data, structure, fill_with_empty_columns=None, fill_with_empty_rows=None, empty_dicts=None, empty_lists=None, empty_cells=None, replace_empty=None):
     
     """
