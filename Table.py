@@ -169,11 +169,28 @@ def restructure(data, structure, fill_with_empty_columns=None, fill_with_empty_r
 ### The Table Class
         
 class Table:
-    def __init__(self, content, space_left=1, space_right=1, orientation="left", min_width=None, max_width=None, same_sized_cols=True,
-                fill_with_empty_rows=True, fill_with_empty_columns=True, empty_cells=["", "#empty"], empty_lists=[[], [""], ["#empty"]],
-                empty_dicts=[{""}, {"#empty"}], replace_empty="", header={"row":[]}): 
+    def __init__(
+        self,
+        content,
+        space_left=1,
+        space_right=1,
+        orientation="left",
+        min_width=None,
+        max_width=None,
+        same_sized_cols=True,
+        fill_with_empty_rows=True,
+        fill_with_empty_columns=True,
+        empty_cells=["", "#empty"],
+        empty_lists=[[], [""], ["#empty"]],
+        empty_dicts=[{}, {""}, {"#empty"}],
+        replace_empty="",
+        header={"row": []}
+    ):
         
         """
+        Initialize a Table object with specified parameters
+
+        Args:
         - content: content of the table in a list_in_list, list_in_dict, dict_in_list or dict_in_dict structure
         - space_left: int: space from the content of a cell to the border on the left side
         - space_right: ... on the right side ...
@@ -211,79 +228,146 @@ class Table:
    
     def add_row(self, index, row):
         
+        """
+        Adds a row at specified index into the content of the tablet
+
+        Args:
+        - index: int: specifies at what index the column will be added
+        - row: the content of the new row in a dict or list structure
+        
+        """
+
+        # handle index if specified as counting from the end because will be working with the insert function that doesnt add element at last place with index = -1
         if index == -1:
             index = "end"
         else:
             if index < 0:
                 index += 1
-            
+            # offset the index by 1 when the row header is active to insert the content accurate
             if "row" in self.header:
                 index += 1
         
+        # restructure the row to a list structure
         row = restructure(row, "list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
         
+        # add a place holder header if col header is active to prevent errors later on when handling the headers
         if "col" in self.header:
             row.insert(0, "")
         
+        # handle inserting at last place
         if index == "end":
             self.content.append(row)
         else:
             self.content.insert(index , row)
+        
+        # set the headers to update for later on
         self.header_action_row = "update"
         self.header_action_col = "update"
 
    
     def add_column(self, index, column):
 
+        """
+        Adds a column at specified index into the content of the table
+        
+        Args:
+        - index: int: specifies at what index the column will be added
+        - column: the content of the new row in a dict or list structure
+        """
+
+        # ...
         if index == -1:
             index = "end"
-        
         else:
             if index < 0:
                 index += 1
-
+            # ... column ...
             if "col" in self.header:
                 index += 1
         
+        # ...
         column = restructure(column, "list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
         
+        # ...
         if "row" in self.header:
             column.insert(0, "")
         
+        # ...
         for i in range(len(column)):
             if index == "end":
                 self.content.append(column[i])
             else:
                 self.content[i].insert(index, column[i])
         
+        # ...
         self.header_action_col = "update"
         self.header_action_row = "update"
 
 
     def remove_row(self, index):
+        
+        """
+        removes the row at specified index from the table
+
+        Args:
+        - index: int: specifies which row will be removed
+        """
+        
+        # offset the index by one when row header is active to remove the correct row
         if "row" in self.header:
             index += 1
+
+        # remove the specified row
         self.content.pop(index)
+        
+        # set the headers to update for later on
         self.header_action_row = "update"
         self.header_action_col = "update"
 
 
     def remove_column(self, index):
+        
+        """
+        removes the column at specified index from the table
+        
+        Args:
+        - index: int: specifies which column will be removed
+        """
+
+        # ... column ... column
         if "col" in self.header:
             index += 1
+        
+        # ... column
         for i in self.content:
             i.pop(index)
+        
+        # ...
         self.header_action_row = "update"
         self.header_action_col = "update"
 
 
-    def replace_cell(self, row, col, replace=None, ignore_header=True):
+    def replace_cell(self, row, col, replace=None):
+        
+        """
+        replaces the content of the specified cell with the specified content
+        
+        Args:
+        - row: int: specifies in which row the cell is in
+        - col: int: ... column ...
+        - replace: str/int: specifies with what the cell's content will be replaced
+        """
+        # if replacemen was not specified it will be replaced with standart empty content specified in the table
         if replace == None:
-            replace = self.replace_cell
-        if "row" in self.header and ignore_header:
+            replace = self.replace_empty
+        
+        # handle index offset due to headers
+        if "row" in self.header:
             row += 1
-        if "col" in self.header and ignore_header:
+        if "col" in self.header:
             col += 1
+        
+        # replace the content
         self.content[row][col] = replace
 
 
@@ -327,25 +411,7 @@ class Table:
                         self.header_action_col = "update"
                 self.header[h_type] = restructure(header[h_type], "list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
 
-    
-    def add_header(self, header):
-        for i in list(header.keys()):
-            self.header[i] = header[i]             
-            if i == "col":
-                self.header_action_col = "insert"
-            elif i == "row":   
-                self.header_action_row = "insert"
-
-
     def main(self):
-        
-        if self.orientation not in ["left", "right"]:
-            self.orientation = "left"
-        
-        for arg in [self.fill_with_empty_columns, self.fill_with_empty_rows, self.same_sized_cols]:
-        
-            if arg != True and arg != False:
-                arg = False
         
         self.content = restructure(self.content, "list_in_list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
 
