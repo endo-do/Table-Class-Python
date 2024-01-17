@@ -411,7 +411,7 @@ class Table:
                         self.header_action_col = "update"
                 self.header[h_type] = restructure(header[h_type], "list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
 
-    def main(self):
+    def display(self):
         
         self.content = restructure(self.content, "list_in_list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
 
@@ -649,4 +649,4 @@ class Table:
 
 
 Table1 = Table(content=[[1, 2, 3, 4], [1, 11, 1, 111], [], [9 , 9, 9, 99]])
-Table1.main()
+Table1.display()
