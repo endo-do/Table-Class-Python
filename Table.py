@@ -261,8 +261,10 @@ class Table:
             self.content.insert(index , row)
         
         # set the headers to update for later on
-        self.header_action_row = "update"
-        self.header_action_col = "update"
+        if "col" in self.header:
+            self.header_action_col = "update"
+        if "row" in self.header:
+            self.header_action_row = "update"
 
    
     def add_column(self, index, column):
@@ -300,8 +302,10 @@ class Table:
                 self.content[i].insert(index, column[i])
         
         # ...
-        self.header_action_col = "update"
-        self.header_action_row = "update"
+        if "col" in self.header:
+            self.header_action_col = "update"
+        if "row" in self.header:
+            self.header_action_row = "update"
 
 
     def remove_row(self, index):
@@ -321,8 +325,10 @@ class Table:
         self.content.pop(index)
         
         # set the headers to update for later on
-        self.header_action_row = "update"
-        self.header_action_col = "update"
+        if "col" in self.header:
+            self.header_action_col = "update"
+        if "row" in self.header:
+            self.header_action_row = "update"
 
 
     def remove_column(self, index):
@@ -343,8 +349,10 @@ class Table:
             i.pop(index)
         
         # ...
-        self.header_action_row = "update"
-        self.header_action_col = "update"
+        if "col" in self.header:
+            self.header_action_col = "update"
+        if "row" in self.header:
+            self.header_action_row = "update"
 
 
     def replace_cell(self, row, col, replace=None):
@@ -372,8 +380,13 @@ class Table:
 
 
     def swap_cols_rows(self):
-        self.header_action_col = "update"
-        self.header_action_row = "update"
+
+        """
+        swaps the columns with the rows and vice versa
+
+        """
+
+        # swap the headers
         if "row" in self.header:
             if "col" in self.header:
                 col = self.header["col"]
@@ -386,7 +399,14 @@ class Table:
             self.header["row"] = self.header["col"]
             del self.header["col"]
 
+        # swap the columns with the rows and vice versa
         self.content = list(map(list, zip(*self.content)))
+
+        # set the headers to update for later on
+        if "col" in self.header:
+            self.header_action_col = "update"
+        if "row" in self.header:
+            self.header_action_row = "update"
 
     
     def conf_header(self, header):
@@ -648,5 +668,7 @@ class Table:
             row_index += 1
 
 
-Table1 = Table(content=[[1, 2, 3, 4], [1, 11, 1, 111], [], [9 , 9, 9, 99]])
+Table1 = Table(content=[[1, 2, 3, 4], [1, 11, 1, 111], [], [9 , 9, 9, 99]], header={})
+Table1.display()
+Table1.swap_cols_rows()
 Table1.display()
