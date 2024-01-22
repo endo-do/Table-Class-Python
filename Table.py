@@ -192,7 +192,7 @@ class Table:
         empty_lists=[[], [""], ["#empty"]],
         empty_dicts=[{}, {""}, {"#empty"}],
         replace_empty="",
-        header={"row": []}
+        header={"row": ["#default"]},
     ):
         
         """
@@ -228,7 +228,7 @@ class Table:
         self.empty_lists = empty_lists 
         self.empty_dicts = empty_dicts 
         self.replace_empty = replace_empty 
-        self.header = header 
+        self.header = header
         
         # set the header_actions to 'insert'
         self.header_action_col = "insert"
@@ -429,6 +429,7 @@ class Table:
         - header: {header_type:header_content}: 
             - header_type ("row" or "col") specifies which header will be edited
             - header_content (in dict or list structure OR in str when editing a specific header) specifies the content
+                - [#default] automaticly sets the header to a simple col/row count
         - action: str: 'add', 'remove', 'edit' or fully 'replace' existing header
         - index: int: when editing a specific header specifies the row or column
         """
@@ -509,7 +510,7 @@ class Table:
                         self.columns = len(row)
 
                 # if header content is not specified implement the default one
-                if self.header["row"] == []:    
+                if self.header["row"] == ["#default"]:    
                     self.header["row"] = [f"{index+1}." for index in range(0, self.columns)]
 
                 # if header content is specified by user
@@ -538,7 +539,7 @@ class Table:
             if self.header_action_col == "insert":
 
                 # ...
-                if self.header["col"] == []:
+                if self.header["col"] == ["#default"]:
                     self.header["col"] = [f"{index+1}." for index in range(0, len(self.content))]
 
                 # ...
@@ -568,53 +569,44 @@ class Table:
         for row in self.content:
             if len(row) > self.columns: 
                 self.columns = len(row)
-        
-        for index, row in enumerate(self.content):
-            
-            if row == []:
-            
-                for i in range(self.columns):
-                    self.content[index] = [self.replace_empty for i in range(self.columns)]
 
+        # adding empty cells to fill up missing cells
         for row in self.content:
             
             while len(row) < self.columns:
                 row.append(self.replace_empty)
 
+        # calculating the amount of chars per column = width of the column
         self.max_chars = []
-        
         for cell in range(self.columns): 
             self.max_chars.append(0)
-
         for row in self.content: 
             active_column = 0
-        
             for cell in row:
-        
                 if len(str(cell)) > self.max_chars[active_column]: 
                     self.max_chars[active_column] = len(str(cell))
-        
                 active_column += 1
-
         column_index = 0  
         
+        # set a minimum width for each column if specified
         if self.min_width != None:
             for index, i in enumerate(self.max_chars):
                 if self.min_width > int(i):
                     self.max_chars[index] = self.min_width
         
+        # ... maximum ...
         if self.max_width != None:
             for index, i in enumerate(self.max_chars):
                 if self.max_width < int(i):
                     self.max_chars[index] = self.max_width
 
+        # implement the same size for each column if specified
         if self.same_sized_cols:
             self.max_chars = [max(self.max_chars) for i in self.max_chars]
 
-        if "col" in self.header and "row" in self.header:
-            self.content[0][0] = ""
-
-        print("╔", end="") 
+        ### Printing the table
+    
+        print("╔", end="")
         for column in self.max_chars:
             print("═" * self.space_left, end="")  
             print("═" * column, end="")  
@@ -635,6 +627,7 @@ class Table:
 
         row_index = 0  
 
+        
         for row in range(self.rows): 
             print("║", end="") 
             column_index = 0
@@ -739,5 +732,5 @@ class Table:
 
 Table1 = Table(content=[[1, 2, 3, 4], [1, 11, 1, 111], [], [9 , 9, 9, 99]])
 Table1.display()
-Table1.conf_header("row", "edit", "test", 0)
+Table1.conf_header("col", "add", ["#default"])
 Table1.display()
