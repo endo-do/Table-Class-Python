@@ -409,7 +409,18 @@ class Table:
             self.header_action_row = "update"
 
     
-    def conf_header(self, header):
+    def conf_header(self, header, action):
+        """
+        add, remove or edit headers
+
+        Args:
+        - header: {header_type:header_content}: 
+            - header_type ("row" or "col") specifies which header will be edited
+            - header_content (in dict or list structure) specifies the content
+        - action: str: "add", "replace" or "remove"
+        """
+        
+        
         for h_type in list(header.keys()):
             if header[h_type] in ["clear", "delete", "del"]:
                 del self.header[h_type]
