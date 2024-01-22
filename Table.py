@@ -409,38 +409,48 @@ class Table:
             self.header_action_row = "update"
 
     
-    def conf_header(self, header, action):
+    def conf_header(self, header, action, content=None, index=None):
         """
         add, remove or edit headers
 
         Args:
         - header: {header_type:header_content}: 
             - header_type ("row" or "col") specifies which header will be edited
-            - header_content (in dict or list structure) specifies the content
-        - action: str: "add", "replace" or "remove"
+            - header_content (in dict or list structure OR in str when editing a specific header) specifies the content
+        - action: str: 'add', 'remove', 'edit' or fully 'replace' existing header
+        - index: int: when editing a specific header specifies the row or column
         """
         
-        
-        for h_type in list(header.keys()):
-            if header[h_type] in ["clear", "delete", "del"]:
-                del self.header[h_type]
-                if h_type == "row":
+        if action.lower() == "remove":
+            if header in self.header:
+                del self.header[header]
+                if header == "row":
                     self.content.pop(0)
-                if h_type == "col":
+                elif header == "col":
                     for i in self.content:
                         i.pop(0)
-            else:
-                if h_type == "row":
-                    if "row" not in self.header:
-                        self.header_action_row = "insert"
-                    else:
-                        self.header_action_row = "update"
-                if h_type == "col":
-                    if "col" not in self.header:               
-                        self.header_action_col = "insert"
-                    else:
-                        self.header_action_col = "update"
-                self.header[h_type] = restructure(header[h_type], "list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
+
+        elif action.lower() == "edit":
+            if header == "row" and "row" in self.header:
+                self.header["row"][index] = content
+                self.header_action_row = "update"
+            elif header == "col" and "col" in self.header:
+                self.header["col"][index] = content
+                self.header_action_col = "update"
+        
+        elif action.lower() == "add" or action.lower() == "replace":
+            if header == "row":
+                if header not in self.header:
+                    self.header_action_row = "insert"
+                else:
+                    self.header_action_row = "update"
+            elif header == "col":
+                if header not in self.header:
+                    self.header_action_col = "insert"
+                else:
+                    self.header_action_col = "update"
+        
+            self.header[header] = restructure(content, "list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
 
     def display(self):
         
@@ -482,7 +492,7 @@ class Table:
                 self.header_action_col = "insert"
 
             if self.header_action_col == "insert":
-            
+
                 if self.header["col"] == []:
                     self.header["col"] = [f"{index+1}." for index in range(0, len(self.content))]
 
@@ -497,7 +507,7 @@ class Table:
                 if "row" in self.header:
                     self.header["col"].pop(-1)
                     self.header["col"].insert(0, self.replace_empty)
-                
+
                 for index, i in enumerate(self.header["col"]):
                     self.content[index] = [i] + self.content[index]
 
@@ -679,7 +689,7 @@ class Table:
             row_index += 1
 
 
-Table1 = Table(content=[[1, 2, 3, 4], [1, 11, 1, 111], [], [9 , 9, 9, 99]], header={})
+Table1 = Table(content=[[1, 2, 3, 4], [1, 11, 1, 111], [], [9 , 9, 9, 99]])
 Table1.display()
-Table1.swap_cols_rows()
+Table1.conf_header("row", "edit", "test", 0)
 Table1.display()
