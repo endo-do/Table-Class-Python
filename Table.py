@@ -1,3 +1,11 @@
+"""
+Documentation:
+- I will to column as col through out this documentation
+- Each Function will have a short explanation at the start that explains the general purpose and each argument
+- If a documentation would be the exact same as a similar above it will be replaced with '...'
+"""
+
+
 ### General Functions
 
 def restructure(data, structure, fill_with_empty_columns=None, fill_with_empty_rows=None, empty_dicts=None, empty_lists=None, empty_cells=None, replace_empty=None):
@@ -222,8 +230,12 @@ class Table:
         self.replace_empty = replace_empty 
         self.header = header 
         
+        # set the header_actions to 'insert'
         self.header_action_col = "insert"
-        self.header_action_row = "insert"    
+        self.header_action_row = "insert"
+
+        # restructure the given content
+        self.content = restructure(self.content, "list_in_list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
 
    
     def add_row(self, index, row):
@@ -421,8 +433,11 @@ class Table:
         - index: int: when editing a specific header specifies the row or column
         """
         
+        # handle removing a header
         if action.lower() == "remove":
             if header in self.header:
+                
+                # delete the header and its implemented content from of the table
                 del self.header[header]
                 if header == "row":
                     self.content.pop(0)
@@ -430,94 +445,127 @@ class Table:
                     for i in self.content:
                         i.pop(0)
 
+        # handle editing the header of a specific row or column
         elif action.lower() == "edit":
+            
+            # handle the row header
             if header == "row" and "row" in self.header:
+            
+                # replace the header with specified content and set header_action to update
                 self.header["row"][index] = content
                 self.header_action_row = "update"
+            
+            # ... col ...
             elif header == "col" and "col" in self.header:
+                
+                # ...
                 self.header["col"][index] = content
                 self.header_action_col = "update"
         
+        # handle adding or replacing existing
         elif action.lower() == "add" or action.lower() == "replace":
+            
+            # handle row header
             if header == "row":
                 if header not in self.header:
                     self.header_action_row = "insert"
                 else:
                     self.header_action_row = "update"
+            
+            # handle col header
             elif header == "col":
                 if header not in self.header:
                     self.header_action_col = "insert"
                 else:
                     self.header_action_col = "update"
         
+            # add the specified header or replace it if it already exists
             self.header[header] = restructure(content, "list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
 
+    
     def display(self):
-        
-        self.content = restructure(self.content, "list_in_list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
 
+        """
+        the main function that displays the table
+        """
+
+        # handle the row header such as implementing it to the table or update it if necessary
         if "row" in self.header:
             
+            # handle 'update' header action
             if self.header_action_row == "update":
+                
+                # remove the implemented header and set action the 'insert' to fully update the header
                 self.content.pop(0)
                 self.header_action_row = "insert"
 
+            # handle 'insert' header action
             if self.header_action_row == "insert":
-                self.columns = 0
                 
+                # recalculate the count of columns
+                self.columns = 0
                 for row in self.content:
-
                     if len(row) > self.columns: 
                         self.columns = len(row)
 
+                # if header content is not specified implement the default one
                 if self.header["row"] == []:    
                     self.header["row"] = [f"{index+1}." for index in range(0, self.columns)]
 
+                # if header content is specified by user
                 else: 
                     
+                    # add empty headers if header content doesnt cover all rows
                     if len(self.header["row"]) < self.columns -1 if "col" in self.header else self.columns:
-
                         for i in range(self.columns -1 if "col" in self.header else self.columns - len(self.header["row"])):
                             self.header["row"].append(self.replace_empty)
              
+                # implement the header into the content of the table
                 self.content = [self.header["row"]] + self.content
         
+        # ... col ...
         if "col" in self.header:
 
+            # ...
             if self.header_action_col == "update":
             
+                # ...
                 for i in self.content:
-                    i.pop(0)
-                
+                    i.pop(0)    
                 self.header_action_col = "insert"
 
+            # ...
             if self.header_action_col == "insert":
 
+                # ...
                 if self.header["col"] == []:
                     self.header["col"] = [f"{index+1}." for index in range(0, len(self.content))]
 
+                # ...
                 else:
 
+                    # ... columns
                     if len(self.header["col"]) < len(self.content):
-            
                         for i in range(len(self.content) - len(self.header["col"])):
                             self.header["col"].append(self.replace_empty)
 
-                
+                # handle if row and col header are active
                 if "row" in self.header:
                     self.header["col"].pop(-1)
                     self.header["col"].insert(0, self.replace_empty)
 
+                # ... 
                 for index, i in enumerate(self.header["col"]):
                     self.content[index] = [i] + self.content[index]
 
+        # set header actions to nothing
         self.header_action_col = "nothing"
         self.header_action_row = "nothing"
 
+        # recalculate the counts fo columns and rows
         self.rows = len(self.content)
         self.columns = 0
         for row in self.content:
-
             if len(row) > self.columns: 
                 self.columns = len(row)
         
