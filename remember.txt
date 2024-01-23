@@ -1,2 +1,0 @@
-in README mention that headers are not included in the indexes when adding/removing content
-... that indexes work the same as in python lists -> -1 for last, 0 for first element
