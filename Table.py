@@ -604,8 +604,9 @@ class Table:
         if self.same_sized_cols:
             self.max_chars = [max(self.max_chars) for i in self.max_chars]
 
-        ### Printing the table
+        ### printing the table
     
+        # print the headline
         print("╔", end="")
         for column in self.max_chars:
             print("═" * self.space_left, end="")  
@@ -627,15 +628,19 @@ class Table:
 
         row_index = 0  
 
-        
+        # print each row
         for row in range(self.rows): 
             print("║", end="") 
             column_index = 0
 
+            # for each cell in row
             for column in range(self.columns):
+                
+                # calculate amount of spaces to add to content to ensure correct sizing of the cell
                 spacebar_counter = self.max_chars[column] - len(str(self.content[row][column])) 
                 text = str(self.content[row][column])
 
+                # handle if content is larger than max width
                 if len(text) > self.max_chars[column_index]:
 
                     if self.max_chars[column_index] == 2:
@@ -655,31 +660,31 @@ class Table:
                         text = textstr
                     spacebar_counter = 0
                 
+                # handle left orientation
                 if self.orientation == "left": 
                     content = text + str(spacebar_counter * " ")  
                 
+                # ... right ...
                 elif self.orientation == "right":
                     content = str(spacebar_counter * " ") + text 
 
+                # print the cell
                 print(" " * self.space_left, end="")
                 print(content, end="")
                 print(" " * self.space_right, end="")
                 
+                # handle the vertical separators between cells and the right border
                 if column_index == self.columns - 1: 
                     print("║") 
-                
                 else:
-                
                     if "col" in self.header and column_index == 0:
                         line = "║"
-                
                     else:
                         line = "│" 
-                    
                     print(line, end="")
-
                 column_index += 1  
             
+            # handle the horizontal sperators between rows and the bottom border
             if row_index == 0 and "row" in self.header: 
                 left_border = "╠"
                 connection = "═"
