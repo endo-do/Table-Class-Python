@@ -706,6 +706,7 @@ class Table:
             print(left_border, end="") 
             column_index = 0
 
+            # print the horizontal separators
             for column in self.max_chars: 
                 print(connection * self.space_left, end="")
                 print(column * connection, end="") 
@@ -733,9 +734,3 @@ class Table:
                 column_index += 1
 
             row_index += 1
-
-
-Table1 = Table(content=[[1, 2, 3, 4], [1, 11, 1, 111], [], [9 , 9, 9, 99]])
-Table1.display()
-Table1.conf_header("col", "add", ["#default"])
-Table1.display()
