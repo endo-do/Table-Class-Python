@@ -1,6 +1,6 @@
 """
 Documentation:
-- I will to column as col through out this documentation
+- I will refer to column as col through out this documentation
 - Each Function will have a short explanation at the start that explains the general purpose and each argument
 - If a documentation would be the exact same as a similar above it will be replaced with '...'
 """
