@@ -85,6 +85,12 @@ The following are parameters of the Table Class
 
 - There are 2 types of headers: a row ('row') and a column ('col') one
 
+    - row header: adds an extra row at the start of the content
+        - E.g. [[h1, h2, h3], [1, 2, 3], [4, 5, 6], [7, 8, 9]]
+
+    - column header: adds a header at the start of each row
+        - E.g. [[h1, 1, 2, 3], [h2, 4, 5, 6], [h3, 7, 8, 9]]
+
 - The function 'conf_header' is used to configure the headers
 
 - It takes the following parameters:
