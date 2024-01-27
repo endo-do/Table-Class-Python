@@ -34,3 +34,7 @@ A simple Python Class for displaying information as a customizable table in the 
 - replace_empty (str) definies with what empty cells/lists/dicts will be replaced
 - header ([{header_type:header_content}, ..]) definies the active headers
     - header_types are 'row' and 'col'
+
+### Functions
+
+#### test
