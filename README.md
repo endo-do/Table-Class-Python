@@ -7,9 +7,9 @@ The following is also documented in the code itself
 
 The following are parameters of the Table Class
 
-- 'content': The content of the table. Supported data structures are listed below in the Data Structure Sections.
+- 'content': The content of the table. Supported data structures are listed below in the Data Structure Sections
 
-- 'space_left' and 'space_right' (int): Add spaces at the left and right side of each cell's content.
+- 'space_left' and 'space_right' (int): Add spaces at the left and right side of each cell's content
     - Default set to '1'
 
 - 'orientation' (str): Orientates the cell's content to either the right ('right') or left ('left') side of the cell.
@@ -20,15 +20,15 @@ The following are parameters of the Table Class
     - If content is larger than max_width some of the content will be cut off and replaced with '..'
     - Default set to 'None'
 
-- 'same_sized_cols' (bool): Sets the max_width for each cell to the largest width of the table to create a evenly spaced table.
+- 'same_sized_cols' (bool): Sets the max_width for each cell to the largest width of the table to create a evenly spaced table
     - Default set to 'False'
 
-- 'fill_with_empty_rows' and 'fill_with_empty_cols' (bool): fills not specified rows/cols with empty ones.
+- 'fill_with_empty_rows' and 'fill_with_empty_cols' (bool): fills not specified rows/cols with empty ones
     - e.g. if content is given as dict = {1:[a, b, c], 3:[1, 2, 3]}
     - A empty row at index 1 would be added
     - Default set to 'True'
 
-- 'empty_cells', 'empty_lists' and 'empty_dicts' (list): Definies what cells/lists/dicts will be treated as empty.
+- 'empty_cells', 'empty_lists' and 'empty_dicts' (list): Definies what cells/lists/dicts will be treated as empty
     - Default set to '["", "#empty"], [[], [""], ["#empty"]] and [{}, {""}, {"#empty"}]
 
 - 'replace_empty' (str) definies with what empty cells/lists/dicts will be replaced
@@ -42,18 +42,25 @@ The following are parameters of the Table Class
 
 ## Functions:
 
-### Add/Remove/Replace Content:
+### Add Content:
 
-You can configure the content of the table with the following functions:
-- add_row / add_column
-- replace_row / replace_column
-- remove_row / remove_column
-- replace_cell
+The functions 'add_row' and 'add_column' are used for adding rows and columns
+They both take 'index' and 'row'/'col' as arguments
+E.g. add_row(0, [1, 2, 3, 4]) would add a new row at position 0 with the values 1, 2, 3 and 4
 
-All these functions have an index as parameter to specify which row/col will be affected
-- the replace_cell functions take 2 arguments (row and col) instead of an index
+### Remove Content:
 
-The add and replace functions also have a row or col as parameter to specify the content of the added or replaced row / col
+The functions 'remove_row' and 'remove_column' are used for removing rows and columns
+They both take 'index' as an argument
+E.g. remove_row(0) would remove the first row
+
+### Replacing Content:
+
+The functions 'replace_row', 'replace_column' and 'replace_cell' are used for replacing rows, column and cells
+'replace_row' and 'replace_column' both take 'index' and 'row'/'col' as arguments.
+'replace_cell' takes 'row', 'col' and 'replace' as arguments
+    - if 'row', 'col' or 'replace' were not defnied the row/col/cell will be replaced with standart 'replace_empty'
+E.g. replace_cell(-1, 0, "hello") would replace the first element in the last row with "hello"
 
 ### Get Content:
 

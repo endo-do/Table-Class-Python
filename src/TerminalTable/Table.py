@@ -370,7 +370,7 @@ class Table:
             self.header_action_row = "update"
 
 
-    def replace_row(self, index, row):
+    def replace_row(self, index, row=None):
         """
         Replaces the row at specified index with given content
 
@@ -378,13 +378,17 @@ class Table:
         - index: int: specifies which row will be replaced
         - row: content of the new row
         """
-        
+    
+        # If row var was not specified it will be replaced with standart empty content specified in the table
+        if column == None:
+            column = [self.replace_empty]
+
         # Remove the existing row and add the new row at given index
         self.remove_row(index)
         self.add_row(index, row)
 
 
-    def replace_column(self, index, column):
+    def replace_column(self, index, column=None):
         """
         Replaces the column at specified index with given content
 
@@ -392,6 +396,10 @@ class Table:
         - index: int: specifies which column will be replaced
         - column: content of the new column
         """
+
+        # ... column ...
+        if column == None:
+            column = [self.replace_empty]
 
         # ... column ... column ...
         self.remove_column(index)
@@ -408,7 +416,7 @@ class Table:
         - col: int: ... column ...
         - replace: str/int: specifies with what the cell's content will be replaced
         """
-        # If replace var was not specified it will be replaced with standart empty content specified in the table
+        # ... replace ...
         if replace == None:
             replace = self.replace_empty
         
