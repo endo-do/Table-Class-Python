@@ -1,8 +1,8 @@
 """
 Documentation:
-- Column is sometimes shortened to 'col'
-- Each Function will have a short explanation at the start that explains the general purpose and each argument
-- If a documentation would be the exact same as a similar above it will be replaced with '...'
+- The term "Column" may be abbreviated to 'col' for brevity
+- Each function will include a brief introduction explaining its general purpose and detailing each argument
+- In the Argument Explanation section of a function, data types may be referenced to prevent potential ValueErrors
 """
 
 
@@ -183,14 +183,14 @@ class Table:
         orientation="left",
         min_width=None,
         max_width=None,
-        same_sized_cols=True,
+        same_sized_cols=False,
         fill_with_empty_rows=True,
         fill_with_empty_columns=True,
         empty_cells=["", "#empty"],
         empty_lists=[[], [""], ["#empty"]],
         empty_dicts=[{}, {""}, {"#empty"}],
         replace_empty="",
-        header={"row": ["#default"]},
+        header={},
     ):
         
         """
@@ -198,18 +198,18 @@ class Table:
 
         Args:
         - content: content of the table in a list_in_list, list_in_dict, dict_in_list or dict_in_dict structure
-        - space_left: int: space from the content of a cell to the border on the left side
-        - space_right: ... on the right side ...
+        - space_left: int: space from the content of a cell to its border on the left side
+        - space_right: int: space from the content of a cell to its border on the right side
         - orientation: str: "left" or "right" | orientates the content to the left or to the right side of the cell
         - min_width: int: minimum width of a cell. spaces will be added when to short
         - max_width: int: maximum width of a cell. content will be shortened when to long
         - same_sized_cols: bool: toggles same width for each column
         - fill_with_empty_rows: bool: toggles filling empty rows for every not specified row in content
-        - fill_with_empty_columns: ... columns ... columns ...
+        - fill_with_empty_columns: bool: toggles filling empty columns for every not specified column in content
         - empty_cells: list: specifies what is considered as an empty cell
-        - empty_lists: ... list
-        - empty_dicts: ... dict
-        - replace_empty: str: replaces empty cells and the content of empty lists and dicts
+        - empty_lists: specifies what is considered as an empty list
+        - empty_dicts: specifies what is considered as an empty dict
+        - replace_empty: str: replaces empty cells and the content of empty lists and dicts with this str
         - header: dict {header_type:[header]}: header_type: str: "row" or "col", "header": list or dict: content of the header
         """
     
@@ -247,30 +247,31 @@ class Table:
         
         """
 
-        # handle index if specified as counting from the end because will be working with the insert function that doesnt add element at last place with index = -1
+        # Manages the index handling addressing the fact that using insert(-1) doesn't insert at the last position
+        # Replaces -1 with "end" and subtracts -1 when the index is negative, ensuring accurate placement.
         if index == -1:
             index = "end"
         else:
             if index < 0:
                 index += 1
-            # offset the index by 1 when the row header is active to insert the content accurate
+            # Offset the index by 1 when the row header is active to insert the content accurately
             if "row" in self.header:
                 index += 1
         
-        # restructure the row to a list structure
+        # Restructure the row's content to a list structure
         row = restructure(row, "list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
         
-        # add a place holder header if col header is active to prevent errors later on when handling the headers
+        # Add a place holder header if 'col' header is active to prevent errors later on when handling the headers
         if "col" in self.header:
             row.insert(0, "")
         
-        # handle inserting at last place
+        # Handle inserting at last place due to insert function as explained above
         if index == "end":
             self.content.append(row)
         else:
             self.content.insert(index , row)
         
-        # set the headers to update for later on
+        # Set the headers to update later on
         if "col" in self.header:
             self.header_action_col = "update"
         if "row" in self.header:
@@ -321,20 +322,20 @@ class Table:
     def remove_row(self, index):
         
         """
-        removes the row at specified index from the table
+        Removes the row at specified index from the table
 
         Args:
         - index: int: specifies which row will be removed
         """
         
-        # offset the index by one when row header is active to remove the correct row
+        # Offset the index by one when row header is active to remove the correct row
         if "row" in self.header:
             index += 1
 
-        # remove the specified row
+        # Remove the specified row
         self.content.pop(index)
         
-        # set the headers to update for later on
+        # ...
         if "col" in self.header:
             self.header_action_col = "update"
         if "row" in self.header:
@@ -365,38 +366,157 @@ class Table:
             self.header_action_row = "update"
 
 
+    def replace_row(self, index, row):
+        """
+        Replaces the row at specified index with given content
+
+        Args:
+        - index: int: specifies which row will be replaced
+        - row: content of the new row
+        """
+        
+        # Remove the existing row and add the new row at given index
+        self.remove_row(index)
+        self.add_row(index, row)
+
+
+    def replace_column(self, index, column):
+        """
+        Replaces the column at specified index with given content
+
+        Args:
+        - index: int: specifies which column will be replaced
+        - column: content of the new column
+        """
+
+        # ... column ... column ...
+        self.remove_column(index)
+        self.add_column(index, column)
+
+
     def replace_cell(self, row, col, replace=None):
         
         """
-        replaces the content of the specified cell with the specified content
+        Replaces the content of the specified cell with the specified content
         
         Args:
         - row: int: specifies in which row the cell is in
         - col: int: ... column ...
         - replace: str/int: specifies with what the cell's content will be replaced
         """
-        # if replacemen was not specified it will be replaced with standart empty content specified in the table
+        # If replace var was not specified it will be replaced with standart empty content specified in the table
         if replace == None:
             replace = self.replace_empty
         
-        # handle index offset due to headers
+        # Handle index offset due to headers
         if "row" in self.header:
             row += 1
         if "col" in self.header:
             col += 1
         
-        # replace the content
+        # Replace the content
         self.content[row][col] = replace
 
 
+    def get_content(self):
+        """
+        Returns the content of the table without the headers in a list_in_list structure
+
+        Returns:
+        - content in a list_in_list structure
+        """
+
+        content = self.content
+
+        # Remove the 'row' header if active
+        if "row" in self.header:
+            content.pop(0)
+
+        # Remove the 'col' header if active
+        if "col" in self.header:
+            for i in content:
+                i.pop(0)
+
+        # Return the content of the table
+        return content
+
+    
+    def get_row(self, index):
+        """
+        Returns the content of the row at specified index
+
+        Args:
+        - index: int: specifies which row will be returned
+
+        Return:
+        - content of the specified row in a list
+        """
+
+        # Offset the index by 1 if 'row' header is active
+        if "row" in self.header:
+            index += 1
+        
+        # Get the content of the row
+        row = self.content[index]
+
+        # Return the content
+        return row
+    
+
+    def get_column(self, index):
+        """
+        Returns the content of the column at specified index
+        
+        Args:
+        - index: int: specifies which column will be returned
+
+        Return:
+        - content of the specified column in a list
+        """
+
+        # ... 'col' ...
+        if "col" in self.header:
+            index += 1
+
+        # ... column
+        column = [i[index] for i in self.content]
+
+        # ...
+        return column
+    
+
+    def get_cell(self, row, col):
+        """
+        Returns the content of the cell in given row and column
+        
+        Args:
+        - row: int: specifies in which row the cell is
+        - col: int: specifies in which col the cell is
+        
+        Return:
+        - content of the specified cell in a string
+        """
+    
+        # Offset the indexes due to active headers
+        if "col" in self.header:
+            col += 1
+        if "row" in self.header:
+            row += 1
+        
+        # ... cell
+        cell = self.content[row][col]
+
+        # ...
+        return str(cell)
+    
     def swap_cols_rows(self):
 
         """
-        swaps the columns with the rows and vice versa
+        Swaps the columns with the rows and vice versa
 
         """
 
-        # swap the headers
+        # Swap the headers
         if "row" in self.header:
             if "col" in self.header:
                 col = self.header["col"]
@@ -409,15 +529,36 @@ class Table:
             self.header["row"] = self.header["col"]
             del self.header["col"]
 
-        # swap the columns with the rows and vice versa
+        # Swap the columns with the rows and vice versa
         self.content = list(map(list, zip(*self.content)))
 
-        # set the headers to update for later on
+        # Set the headers to update later on
         if "col" in self.header:
             self.header_action_col = "update"
         if "row" in self.header:
             self.header_action_row = "update"
 
+    
+    def get_header(self, header):
+        """
+        Returns the specified header
+
+        Args:
+        - header: str: specifies which active header's content will be returned ('col' or 'row')
+
+        Return:
+        - content of the specified header in a list
+        """
+        
+        # If the given header is active
+        if header in self.header:
+            
+            # Get the headers content
+            header_content = self.header[header]
+
+            # Return the content
+            return header_content
+    
     
     def conf_header(self, header, action, content=None, index=None):
         """
@@ -432,11 +573,11 @@ class Table:
         - index: int: when editing a specific header specifies the row or column
         """
         
-        # handle removing a header
+        # Handle removing a header
         if action.lower() == "remove":
             if header in self.header:
                 
-                # delete the header and its implemented content from of the table
+                # Delete the header and its implemented content from of the table
                 del self.header[header]
                 if header == "row":
                     self.content.pop(0)
@@ -444,13 +585,13 @@ class Table:
                     for i in self.content:
                         i.pop(0)
 
-        # handle editing the header of a specific row or column
+        # Handle editing the header of a specific row or column
         elif action.lower() == "edit":
             
-            # handle the row header
+            # Handle the 'row' header
             if header == "row" and "row" in self.header:
             
-                # replace the header with specified content and set header_action to update
+                # Replace the header with given content and set header_action to update
                 self.header["row"][index] = content
                 self.header_action_row = "update"
             
@@ -461,65 +602,65 @@ class Table:
                 self.header["col"][index] = content
                 self.header_action_col = "update"
         
-        # handle adding or replacing existing
+        # Handle adding or replacing an existing header
         elif action.lower() == "add" or action.lower() == "replace":
             
-            # handle row header
+            # Handle 'row' header
             if header == "row":
                 if header not in self.header:
                     self.header_action_row = "insert"
                 else:
                     self.header_action_row = "update"
             
-            # handle col header
+            # ... 'col' ...
             elif header == "col":
                 if header not in self.header:
                     self.header_action_col = "insert"
                 else:
                     self.header_action_col = "update"
         
-            # add the specified header or replace it if it already exists
+            # Add the specified header or replace it if it's already active
             self.header[header] = restructure(content, "list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
 
     
     def display(self):
 
         """
-        the main function that displays the table
+        The main function that displays the table
         """
 
-        # handle the row header such as implementing it to the table or update it if necessary
+        # Handle the 'row' header such as implementing it to the table or update it if necessary
         if "row" in self.header:
             
-            # handle 'update' header action
+            # Handle 'update' header action
             if self.header_action_row == "update":
                 
-                # remove the implemented header and set action the 'insert' to fully update the header
+                # Remove the implemented header and set action the 'insert' to fully update the header
                 self.content.pop(0)
                 self.header_action_row = "insert"
 
-            # handle 'insert' header action
+            # Handle 'insert' header action
             if self.header_action_row == "insert":
                 
-                # recalculate the count of columns
+                # Recalculate the count of columns
                 self.columns = 0
                 for row in self.content:
                     if len(row) > self.columns: 
                         self.columns = len(row)
 
-                # if header content is not specified implement the default one
+                # If header content is not specified implement the default one
                 if self.header["row"] == ["#default"]:    
                     self.header["row"] = [f"{index+1}." for index in range(0, self.columns)]
 
-                # if header content is specified by user
+                # If header content is given
                 else: 
                     
-                    # add empty headers if header content doesnt cover all rows
+                    # Add empty headers if header content doesnt cover all rows
                     if len(self.header["row"]) < self.columns -1 if "col" in self.header else self.columns:
                         for i in range(self.columns -1 if "col" in self.header else self.columns - len(self.header["row"])):
                             self.header["row"].append(self.replace_empty)
              
-                # implement the header into the content of the table
+                # Implement the header into the content of the table
                 self.content = [self.header["row"]] + self.content
         
         # ... col ...
@@ -548,7 +689,7 @@ class Table:
                         for i in range(len(self.content) - len(self.header["col"])):
                             self.header["col"].append(self.replace_empty)
 
-                # handle if row and col header are active
+                # Handle if 'row' and 'col' header are active
                 if "row" in self.header:
                     self.header["col"].pop(-1)
                     self.header["col"].insert(0, self.replace_empty)
@@ -557,24 +698,24 @@ class Table:
                 for index, i in enumerate(self.header["col"]):
                     self.content[index] = [i] + self.content[index]
 
-        # set header actions to nothing
+        # Reset header actions
         self.header_action_col = "nothing"
         self.header_action_row = "nothing"
 
-        # recalculate the counts fo columns and rows
+        # Recalculate the counts for columns and rows
         self.rows = len(self.content)
         self.columns = 0
         for row in self.content:
             if len(row) > self.columns: 
                 self.columns = len(row)
 
-        # adding empty cells to fill up missing cells
+        # Adding empty cells to fill up missing cells
         for row in self.content:
             
             while len(row) < self.columns:
                 row.append(self.replace_empty)
 
-        # calculating the amount of chars per column = width of the column
+        # Calculating the width for each column
         self.max_chars = []
         for cell in range(self.columns): 
             self.max_chars.append(0)
@@ -586,7 +727,7 @@ class Table:
                 active_column += 1
         column_index = 0  
         
-        # set a minimum width for each column if specified
+        # Set a minimum width for each column if specified
         if self.min_width != None:
             for index, i in enumerate(self.max_chars):
                 if self.min_width > int(i):
@@ -598,13 +739,13 @@ class Table:
                 if self.max_width < int(i):
                     self.max_chars[index] = self.max_width
 
-        # implement the same size for each column if specified
+        # Implement the same size for each column if specified
         if self.same_sized_cols:
             self.max_chars = [max(self.max_chars) for i in self.max_chars]
 
-        ### printing the table
+        ### -Printing the table-
     
-        # print the headline
+        # Print the headline
         print("╔", end="")
         for column in self.max_chars:
             print("═" * self.space_left, end="")  
@@ -626,19 +767,19 @@ class Table:
 
         row_index = 0  
 
-        # print each row
+        # Print each row
         for row in range(self.rows): 
             print("║", end="") 
             column_index = 0
 
-            # for each cell in row
+            # For each cell in row
             for column in range(self.columns):
                 
-                # calculate amount of spaces to add to content to ensure correct sizing of the cell
+                # Calculate amount of spaces to add to content to ensure correct sizing of the cell
                 spacebar_counter = self.max_chars[column] - len(str(self.content[row][column])) 
                 text = str(self.content[row][column])
 
-                # handle if content is larger than max width
+                # Handle if content is larger than max width
                 if len(text) > self.max_chars[column_index]:
 
                     if self.max_chars[column_index] == 2:
@@ -658,7 +799,7 @@ class Table:
                         text = textstr
                     spacebar_counter = 0
                 
-                # handle left orientation
+                # Handle left orientation
                 if self.orientation == "left": 
                     content = text + str(spacebar_counter * " ")  
                 
@@ -666,12 +807,12 @@ class Table:
                 elif self.orientation == "right":
                     content = str(spacebar_counter * " ") + text 
 
-                # print the cell
+                # Print the cell
                 print(" " * self.space_left, end="")
                 print(content, end="")
                 print(" " * self.space_right, end="")
                 
-                # handle the vertical separators between cells and the right border
+                # Handle the vertical separators between cells and the right border
                 if column_index == self.columns - 1: 
                     print("║") 
                 else:
@@ -682,7 +823,7 @@ class Table:
                     print(line, end="")
                 column_index += 1  
             
-            # handle the horizontal sperators between rows and the bottom border
+            # Handle the horizontal sperators between rows and the bottom border
             if row_index == 0 and "row" in self.header: 
                 left_border = "╠"
                 connection = "═"
@@ -704,7 +845,7 @@ class Table:
             print(left_border, end="") 
             column_index = 0
 
-            # print the horizontal separators
+            # Print the horizontal separators
             for column in self.max_chars: 
                 print(connection * self.space_left, end="")
                 print(column * connection, end="") 
