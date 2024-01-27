@@ -10,23 +10,35 @@ The following are parameters of the Table Class
 - 'content': The content of the table. Supported data structures are listed below in the Data Structure Sections.
 
 - 'space_left' and 'space_right' (int): Add spaces at the left and right side of each cell's content.
+    - Default set to '1'
 
 - 'orientation' (str): Orientates the cell's content to either the right ('right') or left ('left') side of the cell.
+    - Default set to 'left'
 
 - 'min_width' and 'max_width' (int): Set a minimum or maximum width for the cells. 
     - If content isn't as large as min_width spaces will be added.
     - If content is larger than max_width some of the content will be cut off and replaced with '..'
+    - Default set to 'None'
 
-- same_sized_cols (bool) sets the max_width for each cell to the largest width of the table to create a evenly spaced table
+- 'same_sized_cols' (bool): Sets the max_width for each cell to the largest width of the table to create a evenly spaced table.
+    - Default set to 'False'
 
-- fill_with_empty_rows/cols (bool) fills not specified rows/cols with empty ones
+- 'fill_with_empty_rows' and 'fill_with_empty_cols' (bool): fills not specified rows/cols with empty ones.
+    - e.g. if content is given as dict = {1:[a, b, c], 3:[1, 2, 3]}
+    - A empty row at index 1 would be added
+    - Default set to 'True'
 
-- empty_cells/lists/dicts (list) definies what cells/lists/dicts will be treated as empty
+- 'empty_cells', 'empty_lists' and 'empty_dicts' (list): Definies what cells/lists/dicts will be treated as empty.
+    - Default set to '["", "#empty"], [[], [""], ["#empty"]] and [{}, {""}, {"#empty"}]
 
-- replace_empty (str) definies with what empty cells/lists/dicts will be replaced
+- 'replace_empty' (str) definies with what empty cells/lists/dicts will be replaced
+    - Default set to ""
 
-- header ([{header_type:header_content}, ..]) definies the active headers
+- 'header' ([{header_type:header_content}, ..]) definies the active headers
     - header_types are 'row' and 'col'
+    - header_content can be given as list or dict
+    - e.g. {"row":["Name", "Age", "Gender"]}
+    - Default set to {}
 
 ## Functions:
 
