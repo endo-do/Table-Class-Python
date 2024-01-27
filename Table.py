@@ -1,6 +1,6 @@
 """
 Documentation:
-- I will refer to column as col through out this documentation
+- Column is sometimes shortened to 'col'
 - Each Function will have a short explanation at the start that explains the general purpose and each argument
 - If a documentation would be the exact same as a similar above it will be replaced with '...'
 """
@@ -11,73 +11,71 @@ Documentation:
 def restructure(data, structure, fill_with_empty_columns=None, fill_with_empty_rows=None, empty_dicts=None, empty_lists=None, empty_cells=None, replace_empty=None):
     
     """
-    Restructures the given data based on the specified structure.
+    Restructures and cleanes the given data based on the specified structure
 
     Args:
-    - data: The data to be restructured.
-    - structure: The desired form in which data will be restructured (e.g., "list").
-    - fill_with_empty_columns: If True, adds columns that are not specified, otherwise skips them during table printing.
-    - fill_with_empty_rows: [Commentary missing]
-    - empty_dicts: Specifies how an empty dict looks like.
-    - empty_lists: [Commentary missing]
-    - empty_cells: Specifies how an empty cell looks like.
-    - replace_empty: Content to replace when an empty dict/list/cell is specified.
+    - data: The data to be restructured
+    - structure: The desired form in which data will be restructured (e.g., 'list' or 'list_in_list')
+    - fill_with_empty_columns: If True, adds columns that are not specified in the given data, otherwise skips them during table printing
+    - fill_with_empty_rows: If True, adds rows that are not specified in the given data, otherwise skips them during table printing
+    - empty_dicts: Specifies how an empty dict looks like
+    - empty_lists: Specifies how an empty list looks like
+    - empty_cells: Specifies how an empty cell looks like
+    - replace_empty: Content to replace when an empty dict/list/cell is specified
 
     Returns:
     - The restructured and cleaned data.
     """
 
-    # if the data is an empty list return it empty
+    # If the data is an empty list return a list with the specified 'replace_empty' var
     if data in empty_lists:
         return [replace_empty]
     
     else:
         
-        # get the structure of the data with the type() function
+        # Get the structure of the data with the 'type()' function
         data_type = type(data) 
         if data_type is list:
-            element_type = type(data[0]) 
+            element_type = type(data[0])
         elif data_type is dict:
             element_type = type(next(iter(data.values()))) 
         
-        # restructers the data into a list
+        # Restructers the data into a list
         if structure == "list":    
             data_structure = data_type.__name__
 
-            # if data is a dictionary
+            # Handle if the data is a structured as a dictionary
             if data_structure == "dict":            
 
-                # sorts all the keys that represent the columns in ascending order and saves them
-                columns = list(data.keys())
-                columns = sorted(columns)
-
-                # adds empty columns if specified in fill_with_empty_columns
+                # Handles 'fill_with_empty_columns' as specified
                 if fill_with_empty_columns:
+                    columns = list(data.keys())
+                    columns = sorted(columns)
                     if len(columns) >= 2:
                         for i in range(columns[0], columns[-1]):
                             if i not in columns:
                                 data[i] = replace_empty
 
-                # sorts the dictionary and restructeres it to a list
+                # Sorts the dictionary and restructeres it to a list
                 data = dict(sorted(data.items()))
                 data = [i for i in list(data.values())]
             
-            # goes through all cells to replace any cell that was specified as empty with the given replace_empty var
+            # Replaces any cell that was specified as empty in the 'empty_cells' list with the given 'replace_empty' var
             for index, i in enumerate(data):
                 if i in empty_cells:
                     data[index] = replace_empty
 
-            # returns the restructured and cleaned data as a list
+            # Returns the restructured and cleaned data as a list
             return data
         
-        # restructures the data into a list_in_list structure
+        # Restructures the data into a list_in_list structure
         if structure == "list_in_list":
             data_structure = f"{element_type.__name__}_in_{data_type.__name__}"
 
-            # if the data is a dict_in_list structure
+            # Handle if the data is structured as a dict_in_list
             if data_structure == "dict_in_list":
                 
-                # adds empty rows if specified in fill_with_empty_rows
+                # Handles 'fill_with_empty_rows' as specified
                 if fill_with_empty_rows:
                     rows = [key for d in data for key in d]
                     rows = sorted(rows)
@@ -85,24 +83,24 @@ def restructure(data, structure, fill_with_empty_columns=None, fill_with_empty_r
                         if row not in rows:
                             data.append({row:[]})
                 
-                # sorts data and creates a var for the restructured data
+                # Sorts the given data and creates a new list for the cleaned data
                 new_content = []
                 data = sorted(data, key=lambda d: next(iter(d)))
 
-                # restructures the data and cleans it
+                # Restructures the given data and replaces any dict that was specified as empty in 'empty_dits' with the given 'replace_empty' var
                 for line in data:    
                     if any(str(val) in empty_dicts for val in line.values()):
                         new_content.append([replace_empty])
                     else:
                         new_content.extend([char for char in line.values()])
                 
-                # replaces the old data with the new sorted and cleaned data
+                # Replaces the old data with the cleaned and restructured one
                 data = new_content
 
-            # if the data is a list_in_dict structure
+            # Handle if the data is structured as a 'list_in_dict'
             elif data_structure == "list_in_dict":
                 
-                # ...
+                # Handles 'fill_with_empty_rows' as specified
                 if fill_with_empty_rows:
                     rows = list(data.keys())
                     rows = sorted(rows)
@@ -110,24 +108,24 @@ def restructure(data, structure, fill_with_empty_columns=None, fill_with_empty_r
                         if row not in rows:
                             data[row] = []
                 
-                # ...
+                # Sorts the given data and creates a new list for the cleaned data
                 new_content = []
                 data = dict(sorted(data.items()))
                 
-                # ...
+                # Restructures the given data and replaces any list that was specified as empty in 'empty_lists' with the given 'replace_empty' var
                 for line in data.values():
                     if line in empty_lists:
                         new_content.append([replace_empty])
                     else:
                         new_content.append(line)
                 
-                # ...
+                # Replaces the old data with the cleaned and restructured one
                 data = new_content
 
-            # if the data is a dict_in_dict structure
+            # Handle if the data is structured as a 'dict_in_dict'
             elif data_structure == "dict_in_dict":
                 
-                # ...
+                # Handles 'fill_with_empty_rows' as specified
                 if fill_with_empty_rows:
                     rows = list(data.keys())
                     rows = sorted(rows)
@@ -135,7 +133,7 @@ def restructure(data, structure, fill_with_empty_columns=None, fill_with_empty_r
                         if row not in rows:
                             data[row] = {}
                 
-                # ...
+                # Handles 'fill_with_empty_columns' as specified
                 if fill_with_empty_columns:
                     for key, row in data.items():
                         columns = list(row.keys())
@@ -144,11 +142,11 @@ def restructure(data, structure, fill_with_empty_columns=None, fill_with_empty_r
                                 if col not in columns:
                                     data[key][col] = replace_empty
                 
-                # ...
+                # Sorts the given data and creates a new list for the cleaned data
                 new_content = []
                 data = {k: dict(sorted(v.items())) if isinstance(v, dict) else v for k, v in sorted(data.items())}
 
-                # ...
+                # Restructures the given data and replaces any list that was specified as empty in 'empty_lists' with the given 'replace_empty' var
                 for line in data:
                     if data[line] in empty_dicts:
                         new_line = [replace_empty]
@@ -160,16 +158,16 @@ def restructure(data, structure, fill_with_empty_columns=None, fill_with_empty_r
                             new_line.append(cell)
                     new_content.append(new_line)
                 
-                # ...
+                # Replaces the old data with the cleaned and restructured one
                 data = new_content
             
-            # Goes through the data and replaces every cell that is specified as empty with the replace_empty var
+            # Replaces any cell that was specified as empty in the 'empty_cells' list with the given 'replace_empty' var
             new_content = []
             for line in data: 
                 new_content.append([str(char) if char not in empty_cells else replace_empty for char in line])
                 data = new_content 
             
-            # returns the restructured and cleaned data as a list_in_list
+            # Returns the restructured and cleaned data as a 'list_in_list'
             return data
 
 
@@ -230,11 +228,11 @@ class Table:
         self.replace_empty = replace_empty 
         self.header = header
         
-        # set the header_actions to 'insert'
+        # Set the header_actions vars to 'insert'
         self.header_action_col = "insert"
         self.header_action_row = "insert"
 
-        # restructure the given content
+        # Restructure the given content to a 'list_in_list'
         self.content = restructure(self.content, "list_in_list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
 
    
