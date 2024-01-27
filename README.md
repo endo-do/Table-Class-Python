@@ -28,9 +28,9 @@ A simple Python Class for displaying information as a customizable table in the 
 - header ([{header_type:header_content}, ..]) definies the active headers
     - header_types are 'row' and 'col'
 
-### Functions
+### Functions:
 
-#### Add/Remove/Replace Content
+#### Add/Remove/Replace Content:
 
 - You can configure the content of the table with the following functions:
     - add_row / add_column
@@ -43,7 +43,7 @@ A simple Python Class for displaying information as a customizable table in the 
 
 - The add and replace functions also have a row or col as parameter to specify the content of the added or replaced row / col
 
-#### Get Content
+#### Get Content:
 
 - You can get specific content from the table with the following functions:
     - get_content
@@ -59,6 +59,27 @@ A simple Python Class for displaying information as a customizable table in the 
 - The get_cell functions takes col and row as parameter and returns the content of the specified cell
 
 - The get_header functions takes header as parameter which can either be 'col' or 'row' and returns the content of the specified header if active
+
+#### Handle Headers:
+
+- With the conf_header function you can add, remove, edit or replace the headers of the table
+
+- It takes header, action, content and index as parameters
+
+    - header secifies which header will be configured ('col' or 'row')
+
+    - action definies if a header is being added, removed, it's content being edited or it's content being fully replaced
+        - working parameters are: 'add', 'remove', 'edit' and 'replace'
+
+    - content definies the content that will be added, fully replace or replace a single col/row in the header if the action is 'add', 'edit' or 'replace'
+        - content should be a list when replacing or adding a header
+        - content should be a str when editing a header
+
+    - index definies what col or row of the header will be replaced when editing the header
+
+- The get_header return a header and takes header as an arument to specify which header should be returned
+    - possible arguments are 'row' or 'col'
+
 
 ## All Links related to this Project:
 
