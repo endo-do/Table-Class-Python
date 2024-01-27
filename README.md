@@ -44,9 +44,9 @@ The following are parameters of the Table Class
 
 ### Add Content:
 
-The functions 'add_row' and 'add_column' are used for adding rows and columns.
-They both take 'index' and 'row'/'col' as arguments
-E.g. add_row(0, [1, 2, 3, 4]) would add a new row at position 0 with the values 1, 2, 3 and 4
+- The functions 'add_row' and 'add_column' are used for adding rows and columns
+- They both take 'index' and 'row'/'col' as arguments
+- E.g. add_row(0, [1, 2, 3, 4]) would add a new row at position 0 with the values 1, 2, 3 and 4
 
 ### Remove Content:
 
