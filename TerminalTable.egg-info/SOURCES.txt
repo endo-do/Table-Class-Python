@@ -1,6 +1,0 @@
-README.md
-setup.py
-TerminalTable.egg-info/PKG-INFO
-TerminalTable.egg-info/SOURCES.txt
-TerminalTable.egg-info/dependency_links.txt
-TerminalTable.egg-info/top_level.txt
