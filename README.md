@@ -3,6 +3,8 @@ A simple Python Class for displaying information as a customizable table in the 
 
 ## How to use the Terminal Class
 
+All of this is also documented in the code itself
+
 ### How to specifiy Indexes correctly:
 
 - When adding, removing or editing the content of the table, the headers dont count as a row/col so the first row will still have the index 0
