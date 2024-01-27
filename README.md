@@ -77,7 +77,7 @@ A simple Python Class for displaying information as a customizable table in the 
 
     - index definies what col or row of the header will be replaced when editing the header
 
-- The get_header return a header and takes header as an arument to specify which header should be returned
+- The get_header function returns a header's content and takes header as an arument to specify which header should be returned
     - possible arguments are 'row' or 'col'
 
 
