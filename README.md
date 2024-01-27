@@ -80,6 +80,9 @@ A simple Python Class for displaying information as a customizable table in the 
 - The get_header function returns a header's content and takes header as an arument to specify which header should be returned
     - possible arguments are 'row' or 'col'
 
+#### Display:
+
+- The display function simply displays the table at its current state
 
 ## All Links related to this Project:
 
