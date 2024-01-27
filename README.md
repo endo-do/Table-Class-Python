@@ -3,32 +3,19 @@ A simple Python Class for displaying information as a customizable table in the 
 
 The following is also documented in the code itself
 
-## How to specifiy Indexes correctly:
+## Parameters of the Table Class:
 
-When adding, removing or editing the content of the table, the headers dont count as a row/col so the first row will still have the index 0
+The following are parameters of the Table Class
 
-The specified index also works the same as in standart python list
-    - This means you can access the first element with 0, the second with 1 and so on
-    - You can also access the last element with -1, second last with -2, and so on
+- 'content': The content of the table. Supported data structures are listed below in the Data Structure Sections.
 
-## Data Structures:
+- 'space_left' and 'space_right' (int): Add spaces at the left and right side of each cell's content.
 
-The table class supports different data structures when adding or editing content to the table or configuring the headers
+- 'orientation' (str): Orientates the cell's content to either the right ('right') or left ('left') side of the cell.
 
-Supported structures are:
-- list_in_list
-- list_in_dict
-- dict_in_list
-- dict_in_dict
-
-
-## Settings of the table:
-
-- space_left and space_right (int) add spaces at the left and right side of each cell's content
-
-- orientation (str) is orientate the cell's content to either the right ('right') or left ('left') side of the cell
-
-- min_width and max_width (int) set a minimum or maximum width for the cells
+- 'min_width' and 'max_width' (int): Set a minimum or maximum width for the cells. 
+    - If content isn't as large as min_width spaces will be added.
+    - If content is larger than max_width some of the content will be cut off and replaced with '..'
 
 - same_sized_cols (bool) sets the max_width for each cell to the largest width of the table to create a evenly spaced table
 
@@ -46,23 +33,23 @@ Supported structures are:
 ### Add/Remove/Replace Content:
 
 You can configure the content of the table with the following functions:
-    - add_row / add_column
-    - replace_row / replace_column
-    - remove_row / remove_column
-    - replace_cell
+- add_row / add_column
+- replace_row / replace_column
+- remove_row / remove_column
+- replace_cell
 
 All these functions have an index as parameter to specify which row/col will be affected
-    - the replace_cell functions take 2 arguments (row and col) instead of an index
+- the replace_cell functions take 2 arguments (row and col) instead of an index
 
 The add and replace functions also have a row or col as parameter to specify the content of the added or replaced row / col
 
 ### Get Content:
 
 You can get specific content from the table with the following functions:
-    - get_content
-    - get_row / get_col
-    - get_cell
-    - get_header
+- get_content
+- get_row / get_col
+- get_cell
+- get_header
 
 The get_content function return the whole table without the headers
     - To work with the full content (headers included) use the table.content variable
@@ -96,6 +83,24 @@ The get_header function returns a header's content and takes header as an arumen
 ### Display:
 
 The display function simply displays the table at its current state
+
+## How to specifiy Indexes correctly:
+
+When adding, removing or editing the content of the table, the headers dont count as a row/col so the first row will still have the index 0
+
+The specified index also works the same as in standart python list
+    - This means you can access the first element with 0, the second with 1 and so on
+    - You can also access the last element with -1, second last with -2, and so on
+
+## Data Structures:
+
+The table class supports different data structures when adding or editing content to the table or configuring the headers
+
+Supported structures are:
+- list_in_list
+- list_in_dict
+- dict_in_list
+- dict_in_dict
 
 ## Sources:
 
