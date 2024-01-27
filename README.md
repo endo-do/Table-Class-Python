@@ -42,6 +42,15 @@ The following are parameters of the Table Class
 
 ## Functions:
 
+### Note: Working with indexes:
+
+- Indexes for functions work the exact same ways as in standart python lists
+    - Index 0 returns the first element and -1 returns the last
+
+- An index will be adjusted to the active headers accordingly
+    - This means that the header dont count as a row or column
+    - E.g. the first row is still accesible with index 0 while a row header is active
+
 ### Add Content:
 
 - The functions 'add_row' and 'add_column' are used for adding rows and columns
@@ -64,20 +73,13 @@ The following are parameters of the Table Class
 
 ### Get Content:
 
-You can get specific content from the table with the following functions:
-- get_content
-- get_row / get_col
-- get_cell
-- get_header
+- The functions 'get_col', 'get_column' and 'get_content' are used to get content from the Table
 
-The get_content function return the whole table without the headers
-    - To work with the full content (headers included) use the table.content variable
+- 'get_col' and 'get_column' each 'index' as an argument
 
-The get_row and get_column functions each take an index as parameter and return the content of the specified row/col in a list
+- 'get_content' returns the whole table without the headers and doesnt need an argument
 
-The get_cell functions takes col and row as parameter and returns the content of the specified cell
-
-The get_header functions takes header as parameter which can either be 'col' or 'row' and returns the content of the specified header if active
+- E.g. get_col(4) would return the fifth column
 
 ### Handle Headers:
 
@@ -102,14 +104,6 @@ The get_header function returns a header's content and takes header as an arumen
 ### Display:
 
 The display function simply displays the table at its current state
-
-## How to specifiy Indexes correctly:
-
-When adding, removing or editing the content of the table, the headers dont count as a row/col so the first row will still have the index 0
-
-The specified index also works the same as in standart python list
-    - This means you can access the first element with 0, the second with 1 and so on
-    - You can also access the last element with -1, second last with -2, and so on
 
 ## Data Structures:
 
