@@ -79,16 +79,16 @@ With the conf_header function you can add, remove, edit or replace the headers o
 
 It takes header, action, content and index as parameters:
 
-    - header secifies which header will be configured ('col' or 'row')
+- header secifies which header will be configured ('col' or 'row')
 
-    - action definies if a header is being added, removed, it's content being edited or it's content being fully replaced
-        - working parameters are: 'add', 'remove', 'edit' and 'replace'
+- action definies if a header is being added, removed, it's content being edited or it's content being fully replaced
+    - working parameters are: 'add', 'remove', 'edit' and 'replace'
 
-    - content definies the content that will be added as or as part of the header's content if the action is 'add', 'edit' or 'replace'
-        - content should be a list when replacing or adding a header
-        - content should be a str when editing a header
+- content definies the content that will be added as or as part of the header's content if the action is 'add', 'edit' or 'replace'
+    - content should be a list when replacing or adding a header
+    - content should be a str when editing a header
 
-    - index definies what col or row of the header will be replaced when editing the header
+- index definies what col or row of the header will be replaced when editing the header
 
 The get_header function returns a header's content and takes header as an arument to specify which header should be returned
     - possible arguments are 'row' or 'col'
