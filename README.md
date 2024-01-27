@@ -1,19 +1,6 @@
 # Terminal Table Python
 A simple Python Class for displaying information as a customizable table in the console
 
-## All Links related to this Project:
-
-### This Project:
-
-- My Profile: https://github.com/endo-do
-- This Repository: https://github.com/endo-do/Terminal-Table-Python/blob/main/Table.py
-
-
-### Sources:
-
-- Box Drawing Characters: https://en.wikipedia.org/wiki/Box-drawing_character
-
-
 ## How to use the Terminal Class
 
 ### How to specifiy Indexes correctly:
@@ -22,6 +9,12 @@ A simple Python Class for displaying information as a customizable table in the 
 - The specified index also works the same as in standart python list
     - This means you can access the first element with 0, the second with 1 and so on
     - You can also access the last element with -1, second last with -2, and so on
+
+### Data Structures:
+
+- The table class supports different data structures when adding or editing content to the table or configuring the headers
+- Supported structures are list_in_list, list_in_dict, dict_in_list or dict_in_dict structure
+
 
 ### Settings of the table:
 
@@ -37,6 +30,26 @@ A simple Python Class for displaying information as a customizable table in the 
 
 ### Functions
 
-#### test: 
+#### Add/Remove/Replace Content
 
--dawd
+- You can configure the content of the table with the following functions:
+    - add_row / add_column
+    - replace_row / replace_column
+    - remove_row / remove_column
+    - replace_cell
+
+- All these functions have an index as parameter to specify which row/col will be affected
+    - the replace_cell functions take 2 arguments (row and col) instead of an index
+
+- The add and replace functions also have a row or col as parameter to specify the content of the added or replaced row / col
+
+## All Links related to this Project:
+
+### This Project:
+
+- My Profile: https://github.com/endo-do
+- This Repository: https://github.com/endo-do/Terminal-Table-Python/blob/main/Table.py
+
+### Sources:
+
+- Box Drawing Characters: https://en.wikipedia.org/wiki/Box-drawing_character
