@@ -50,17 +50,17 @@ The following are parameters of the Table Class
 
 ### Remove Content:
 
-The functions 'remove_row' and 'remove_column' are used for removing rows and columns
-They both take 'index' as an argument
-E.g. remove_row(0) would remove the first row
+- The functions 'remove_row' and 'remove_column' are used for removing rows and columns
+- They both take 'index' as an argument
+- E.g. remove_row(0) would remove the first row
 
 ### Replacing Content:
 
-The functions 'replace_row', 'replace_column' and 'replace_cell' are used for replacing rows, column and cells
-'replace_row' and 'replace_column' both take 'index' and 'row'/'col' as arguments.
-'replace_cell' takes 'row', 'col' and 'replace' as arguments
+- The functions 'replace_row', 'replace_column' and 'replace_cell' are used for replacing rows, column and cells
+- 'replace_row' and 'replace_column' both take 'index' and 'row'/'col' as arguments.
+- 'replace_cell' takes 'row', 'col' and 'replace' as arguments
     - if 'row', 'col' or 'replace' were not defnied the row/col/cell will be replaced with standart 'replace_empty'
-E.g. replace_cell(-1, 0, "hello") would replace the first element in the last row with "hello"
+- E.g. replace_cell(-1, 0, "hello") would replace the first element in the last row with "hello"
 
 ### Get Content:
 
