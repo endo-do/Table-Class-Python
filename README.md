@@ -5,7 +5,7 @@ The following is also documented in the code itself
 
 ### Note: Working with indexes:
 
-- Indexes in the Table Class work the exact same ways as in standart python lists
+- Indexes in the Table Class work the exact same ways as in standard python lists
     - Index 0 returns the first element and -1 returns the last
 
 - An index will be adjusted to the active headers accordingly
@@ -68,14 +68,14 @@ The following are parameters of the Table Class
 - The functions 'replace_row', 'replace_column' and 'replace_cell' are used for replacing rows, column and cells
 - 'replace_row' and 'replace_column' both take 'index' and 'row'/'col' as arguments.
 - 'replace_cell' takes 'row', 'col' and 'replace' as arguments
-    - if 'row', 'col' or 'replace' were not defnied the row/col/cell will be replaced with standart 'replace_empty'
+    - if 'row', 'col' or 'replace' were not specified the row/col/cell will be replaced with standard 'replace_empty'
 - E.g. replace_cell(-1, 0, "hello") would replace the first element in the last row with "hello"
 
 ### Get Content:
 
-- The functions 'get_col', 'get_column' and 'get_content' are used to get content from the Table
+- The functions 'get_col', 'get_row' and 'get_content' are used to get content from the Table
 
-- 'get_col' and 'get_column' each 'index' as an argument
+- 'get_col' and 'get_row' each have 'index' as an argument
 
 - 'get_content' returns the whole table without the headers and doesnt need an argument
 

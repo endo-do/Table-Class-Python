@@ -475,7 +475,7 @@ class Table:
         return row
     
 
-    def get_column(self, index):
+    def get_col(self, index):
         """
         Returns the content of the column at specified index
         
