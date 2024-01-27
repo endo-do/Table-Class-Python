@@ -1,6 +1,6 @@
 """
 Documentation:
-- The term "Column" may be abbreviated to 'col' for brevity
+- The term "column" may be abbreviated to 'col' for brevity
 - Each function will include a brief introduction explaining its general purpose and detailing each argument
 - In the Argument Explanation section of a function, data types may be referenced to prevent potential ValueErrors
 
