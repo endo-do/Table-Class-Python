@@ -77,7 +77,7 @@ The get_header functions takes header as parameter which can either be 'col' or 
 
 With the conf_header function you can add, remove, edit or replace the headers of the table
 
-It takes header, action, content and index as parameters
+It takes header, action, content and index as parameters:
 
     - header secifies which header will be configured ('col' or 'row')
 
