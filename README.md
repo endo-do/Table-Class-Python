@@ -5,7 +5,7 @@ The following is also documented in the code itself
 
 ### Note: Working with indexes:
 
-- Indexes for functions work the exact same ways as in standart python lists
+- Indexes in the Table Class work the exact same ways as in standart python lists
     - Index 0 returns the first element and -1 returns the last
 
 - An index will be adjusted to the active headers accordingly
@@ -37,13 +37,13 @@ The following are parameters of the Table Class
     - A empty row at index 1 would be added
     - Default set to 'True'
 
-- 'empty_cells', 'empty_lists' and 'empty_dicts' (list): Definies what cells/lists/dicts will be treated as empty
+- 'empty_cells', 'empty_lists' and 'empty_dicts' (list): Defines what cells/lists/dicts will be treated as empty
     - Default set to '["", "#empty"], [[], [""], ["#empty"]] and [{}, {""}, {"#empty"}]
 
-- 'replace_empty' (str) definies with what empty cells/lists/dicts will be replaced
+- 'replace_empty' (str) defines with what empty cells/lists/dicts will be replaced
     - Default set to ""
 
-- 'header' ([{header_type:header_content}, ..]) definies the active headers
+- 'header' ([{header_type:header_content}, ..]) defines the active headers
     - header_types are 'row' and 'col'
     - header_content can be given as list or dict
     - e.g. {"row":["Name", "Age", "Gender"]}
@@ -81,25 +81,38 @@ The following are parameters of the Table Class
 
 - E.g. get_col(4) would return the fifth column
 
-### Handle Headers:
+### Headers:
 
-With the conf_header function you can add, remove, edit or replace the headers of the table
+- There are 2 types of headers: a row ('row') and a column ('col') one
 
-It takes header, action, content and index as parameters:
+- The function 'conf_header' is used to configure the headers
 
-- header secifies which header will be configured ('col' or 'row')
+- It takes the following parameters:
 
-- action definies if a header is being added, removed, it's content being edited or it's content being fully replaced
-    - working parameters are: 'add', 'remove', 'edit' and 'replace'
+    - header (str): Defines the type of header that is being configured
 
-- content definies the content that will be added as or as part of the header's content if the action is 'add', 'edit' or 'replace'
-    - content should be a list when replacing or adding a header
-    - content should be a str when editing a header
+    - action (str): Defines what should be done with the header
+        
+        - 'add' adds the header (if already active overwrites the current one)
+            - E.g. if 'row' is active conf_header('row', 'add', ["e.g."]) will overwrite the current row header
+        
+        - 'replace' does the exact same 'add'
 
-- index definies what col or row of the header will be replaced when editing the header
+        - 'edit' overwrites the with index specified row/col in the header
 
-The get_header function returns a header's content and takes header as an arument to specify which header should be returned
-    - possible arguments are 'row' or 'col'
+        - 'remove' removes the header
+
+    - index (int): Is used when editing a header to specify which row or column should be replaced inside the header
+
+        - Default is None
+
+    - content (list, dict or str): Defines the content that will be used to add or replace the header or part of the header
+        
+        - if adding or replacing the content should be a list or dict
+
+        - if editing a part of a header the content should be a str
+
+        - Default is None
 
 ### Display:
 

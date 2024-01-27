@@ -577,10 +577,7 @@ class Table:
         add, remove or edit headers
 
         Args:
-        - header: {header_type:header_content}: 
-            - header_type ("row" or "col") specifies which header will be edited
-            - header_content (in dict or list structure OR in str when editing a specific header) specifies the content
-                - [#default] automaticly sets the header to a simple col/row count
+        
         - action: str: 'add', 'remove', 'edit' or fully 'replace' existing header
         - index: int: when editing a specific header specifies the row or column
         """
