@@ -120,9 +120,17 @@ The following are parameters of the Table Class
     
     - E.g. conf_header("row", "remove") would remove the 'row' header
 
-### Display:
+### Other Functions:
 
-The display function simply displays the table at its current state
+#### Display:
+
+- The 'display' function simply displays the table at its current state
+
+#### Swap Cols with Rows:
+
+-  The 'swap_cols_rows' functions swaps all the rows with the columns including the headers
+
+- E.g. the table [[1, 2, 3], [4, 5, 6], [7, 8, 9]] -> [[1, 4, 7], [2, 5, 8], [3, 6, 9]]
 
 ## Data Structures:
 
