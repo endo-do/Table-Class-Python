@@ -3,6 +3,15 @@ A simple Python Class for displaying information as a customizable table in the 
 
 The following is also documented in the code itself
 
+### Note: Working with indexes:
+
+- Indexes for functions work the exact same ways as in standart python lists
+    - Index 0 returns the first element and -1 returns the last
+
+- An index will be adjusted to the active headers accordingly
+    - This means that the header dont count as a row or column
+    - E.g. the first row is still accesible with index 0 while a row header is active
+
 ## Parameters of the Table Class:
 
 The following are parameters of the Table Class
@@ -41,15 +50,6 @@ The following are parameters of the Table Class
     - Default set to {}
 
 ## Functions:
-
-### Note: Working with indexes:
-
-- Indexes for functions work the exact same ways as in standart python lists
-    - Index 0 returns the first element and -1 returns the last
-
-- An index will be adjusted to the active headers accordingly
-    - This means that the header dont count as a row or column
-    - E.g. the first row is still accesible with index 0 while a row header is active
 
 ### Add Content:
 
