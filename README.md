@@ -104,7 +104,7 @@ The following are parameters of the Table Class
 
     - index (int): Is used when editing a header to specify which row or column should be replaced inside the header
 
-        - Default is None
+        - Default is 'None'
 
     - content (list, dict or str): Defines the content that will be used to add or replace the header or part of the header
         
@@ -112,7 +112,13 @@ The following are parameters of the Table Class
 
         - if editing a part of a header the content should be a str
 
-        - Default is None
+        - Default is 'None'
+
+    - E.g. conf_header("row", "add", ["Name", "Adress", "Gender]) adds a new 'row' header
+    
+    - E.g. conf_header("row", "edit", content="Age", index=1) would swap the "Adress" with "Age" in the 'row' header
+    
+    - E.g. conf_header("row", "remove") would remove the 'row' header
 
 ### Display:
 
