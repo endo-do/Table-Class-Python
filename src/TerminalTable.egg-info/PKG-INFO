@@ -1,0 +1,13 @@
+Metadata-Version: 2.1
+Name: TerminalTable
+Version: 0.1.0
+Summary: A simple Python Class for displaying information as a customizable table in the console
+Home-page: https://github.com/endo-do/Terminal-Table-Python
+Author: Bob
+Author-email: endoflex24@gmail.com
+Project-URL: Bug Tracker, https://github.com/endo-do/Terminal-Table-Python/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+License-File: License

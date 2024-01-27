@@ -1,0 +1,10 @@
+License
+README.md
+pyproject.toml
+setup.cfg
+src/TerminalTable/Table.py
+src/TerminalTable/__init__.py
+src/TerminalTable.egg-info/PKG-INFO
+src/TerminalTable.egg-info/SOURCES.txt
+src/TerminalTable.egg-info/dependency_links.txt
+src/TerminalTable.egg-info/top_level.txt
