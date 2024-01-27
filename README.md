@@ -84,7 +84,7 @@ It takes header, action, content and index as parameters:
     - action definies if a header is being added, removed, it's content being edited or it's content being fully replaced
         - working parameters are: 'add', 'remove', 'edit' and 'replace'
 
-    - content definies the content that will be added, fully replace or replace a single col/row in the header if the action is 'add', 'edit' or 'replace'
+    - content definies the content that will be added as or as part of the header's content if the action is 'add', 'edit' or 'replace'
         - content should be a list when replacing or adding a header
         - content should be a str when editing a header
 
