@@ -43,6 +43,23 @@ A simple Python Class for displaying information as a customizable table in the 
 
 - The add and replace functions also have a row or col as parameter to specify the content of the added or replaced row / col
 
+#### Get Content
+
+- You can get specific content from the table with the following functions:
+    - get_content
+    - get_row / get_col
+    - get_cell
+    - get_header
+
+- The get_content function return the whole table without the headers
+    - To work with the full content (headers included) use the table.content variable
+
+- The get_row and get_column functions each take an index as parameter and return the content of the specified row/col in a list
+
+- The get_cell functions takes col and row as parameter and returns the content of the specified cell
+
+- The get_header functions takes header as parameter which can either be 'col' or 'row' and returns the content of the specified header if active
+
 ## All Links related to this Project:
 
 ### This Project:
