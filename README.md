@@ -53,28 +53,32 @@ The following are parameters of the Table Class
 
 ### Add Content:
 
-- The functions 'add_row' and 'add_column' are used for adding rows and columns
+- The functions 'add_row(index, row)' and 'add_column(index, column)' are used for adding rows and columns
 
-- They both take 'index' and 'row'/'col' as arguments
+- They both take 'index' as an argument to specify on which position in the table they should be placed
+
+- The arguments 'row' and 'column' contain the data that should be put into the new row/column
+    - This can either be a list or a dict
 
 - E.g. add_row(0, [1, 2, 3, 4]) would add a new row at position 0 with the values 1, 2, 3 and 4
 
 ### Remove Content:
 
-- The functions 'remove_row' and 'remove_column' are used for removing rows and columns
+- The functions 'remove_row(index)' and 'remove_column(index)' are used for removing rows and columns
 
-- They both take 'index' as an argument
+- They both take 'index' as an argument to specify which row/col will be removed
 
 - E.g. remove_row(0) would remove the first row
 
 ### Replacing Content:
 
-- The functions 'replace_row', 'replace_column' and 'replace_cell' are used for replacing rows, column and cells
+- The functions 'replace_row(index, row=None)', 'replace_column(index, column=None)' and 'replace_cell(row, col, replace=None)' are used for replacing rows, column and cells
 
-- 'replace_row' and 'replace_column' both take 'index' and 'row'/'col' as arguments.
+- 'replace_row' and 'replace_column' both take 'index' and 'row'/'column' as arguments to specify which row/col/cell will be replaced
 
-- 'replace_cell' takes 'row', 'col' and 'replace' as arguments
-    - if 'row', 'col' or 'replace' were not specified the row/col/cell will be replaced with standard 'replace_empty'
+- 'replace_cell' takes 'row' and 'col' instead of 'index' and 'replace' instead of 'row' or 'column as arguments'
+
+- if 'row', 'column' or 'replace' were not specified the row/column/cell will be replaced with standard 'replace_empty'
 
 - E.g. replace_cell(-1, 0, "hello") would replace the first element in the last row with "hello"
 
@@ -139,11 +143,11 @@ The following are parameters of the Table Class
 
 #### Display:
 
-- The 'display' function simply displays the table at its current state
+- The 'display()' function simply displays the table at its current state
 
 #### Swap Cols with Rows:
 
--  The 'swap_cols_rows' functions swaps all the rows with the columns including the headers
+-  The 'swap_cols_rows()' functions swaps all the rows with the columns including the headers
 
 - E.g. the table [[1, 2, 3], [4, 5, 6], [7, 8, 9]] -> [[1, 4, 7], [2, 5, 8], [3, 6, 9]]
 
