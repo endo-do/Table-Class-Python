@@ -161,7 +161,7 @@ Supported structures for the whole table:
     - E.g.g {1:[a, b, c], 2:[d, e, f], 3:[g, h, i]}
 
 - dict_in_list:
-    - [{1:a, 2:b, 3:c}, {2:d, 2:e, 3:f}, {3:g, 2:h, 3:i}]
+    - [{1:a, 2:b, 3:c}, {1:d, 2:e, 3:f}, {1:g, 2:h, 3:i}]
 
 - dict_in_dict:
     - {1:{1:a, 2:b, 3:c}, 2:{1:d, 2:e, 3:f}, 3:{1:g, 2:h, 3:i}}
