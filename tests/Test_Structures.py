@@ -14,3 +14,9 @@ T1.display()
 
 T1 = Table({1:{1:"a", 2:"b", 3:"c"}, 2:{1:"d", 2:"e", 3:"f"}, 3:{1:"g", 2:"h", 3:"i"}})
 T1.display()
+
+T1.conf_header("row", "add", [1, 2, 3])
+T1.display()
+
+T1.conf_header("row", "replace", {1:1, 2:2, 3:3})
+T1.display()
