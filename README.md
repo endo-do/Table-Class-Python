@@ -54,28 +54,35 @@ The following are parameters of the Table Class
 ### Add Content:
 
 - The functions 'add_row' and 'add_column' are used for adding rows and columns
+
 - They both take 'index' and 'row'/'col' as arguments
+
 - E.g. add_row(0, [1, 2, 3, 4]) would add a new row at position 0 with the values 1, 2, 3 and 4
 
 ### Remove Content:
 
 - The functions 'remove_row' and 'remove_column' are used for removing rows and columns
+
 - They both take 'index' as an argument
+
 - E.g. remove_row(0) would remove the first row
 
 ### Replacing Content:
 
 - The functions 'replace_row', 'replace_column' and 'replace_cell' are used for replacing rows, column and cells
+
 - 'replace_row' and 'replace_column' both take 'index' and 'row'/'col' as arguments.
+
 - 'replace_cell' takes 'row', 'col' and 'replace' as arguments
     - if 'row', 'col' or 'replace' were not specified the row/col/cell will be replaced with standard 'replace_empty'
+
 - E.g. replace_cell(-1, 0, "hello") would replace the first element in the last row with "hello"
 
 ### Get Content:
 
-- The functions 'get_column', 'get_row' and 'get_content' are used to get content from the Table
+- The functions 'get_column(index)', 'get_row(index)' and 'get_content()' are used to get content from the Table
 
-- 'get_column' and 'get_row' each have 'index' as an argument
+- 'get_column' and 'get_row' each have 'index' as an argument to specify which row/col will be returned
 
 - 'get_content' returns the whole table without the headers and doesnt need an argument
 
@@ -91,7 +98,7 @@ The following are parameters of the Table Class
     - column header: adds a header at the start of each row
         - E.g. [[h1, 1, 2, 3], [h2, 4, 5, 6], [h3, 7, 8, 9]]
 
-- The function 'conf_header' is used to configure the headers
+- The function 'conf_header(header, action, index=None, content=None)' is used to configure the headers
 
 - It takes the following parameters:
 
