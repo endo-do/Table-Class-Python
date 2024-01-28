@@ -73,13 +73,13 @@ The following are parameters of the Table Class
 
 ### Get Content:
 
-- The functions 'get_col', 'get_row' and 'get_content' are used to get content from the Table
+- The functions 'get_column', 'get_row' and 'get_content' are used to get content from the Table
 
-- 'get_col' and 'get_row' each have 'index' as an argument
+- 'get_column' and 'get_row' each have 'index' as an argument
 
 - 'get_content' returns the whole table without the headers and doesnt need an argument
 
-- E.g. get_col(4) would return the fifth column
+- E.g. get_column(4) would return the fifth column
 
 ### Headers:
 
@@ -118,11 +118,13 @@ The following are parameters of the Table Class
 
         - if editing a part of a header the content should be a str
 
+        - If the content is [#default] it will simply numerate for each row/col
+        
         - Default is 'None'
 
     - E.g. conf_header("row", "add", ["Name", "Adress", "Gender]) adds a new 'row' header
     
-    - E.g. conf_header("row", "edit", content="Age", index=1) would swap the "Adress" with "Age" in the 'row' header
+    - E.g. conf_header("row", "edit", "Age", 1) would swap the "Adress" with "Age" in the 'row' header
     
     - E.g. conf_header("row", "remove") would remove the 'row' header
 

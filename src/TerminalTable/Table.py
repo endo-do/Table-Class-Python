@@ -33,7 +33,10 @@ def restructure(data, structure, fill_with_empty_columns=None, fill_with_empty_r
 
     # If the data is an empty list return a list with the specified 'replace_empty' var
     if data in empty_lists:
-        return [replace_empty]
+        if structure == "list":
+            return [replace_empty]
+        elif structure == "list_in_list":
+            return [[replace_empty]]
     
     else:
         
@@ -42,8 +45,8 @@ def restructure(data, structure, fill_with_empty_columns=None, fill_with_empty_r
         if data_type is list:
             element_type = type(data[0])
         elif data_type is dict:
-            element_type = type(next(iter(data.values()))) 
-        
+            element_type = type(next(iter(data.values())))
+
         # Restructers the data into a list
         if structure == "list":    
             data_structure = data_type.__name__
@@ -167,7 +170,7 @@ def restructure(data, structure, fill_with_empty_columns=None, fill_with_empty_r
             
             # Replaces any cell that was specified as empty in the 'empty_cells' list with the given 'replace_empty' var
             new_content = []
-            for line in data: 
+            for line in data:
                 new_content.append([str(char) if char not in empty_cells else replace_empty for char in line])
                 data = new_content 
             
@@ -238,8 +241,8 @@ class Table:
 
         # Restructure the given content to a 'list_in_list'
         self.content = restructure(self.content, "list_in_list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
+        
 
-   
     def add_row(self, index, row):
         
         """
@@ -475,7 +478,7 @@ class Table:
         return row
     
 
-    def get_col(self, index):
+    def get_column(self, index):
         """
         Returns the content of the column at specified index
         
@@ -531,8 +534,8 @@ class Table:
         # Swap the headers
         if "row" in self.header:
             if "col" in self.header:
-                col = self.header["col"]
-                self.header["col"] = self.header["row"]
+                col = self.header["col"][1:]
+                self.header["col"] = [""] + self.header["row"]
                 self.header["row"] = col
             else:
                 self.header["col"] = self.header["row"]
@@ -543,12 +546,6 @@ class Table:
 
         # Swap the columns with the rows and vice versa
         self.content = list(map(list, zip(*self.content)))
-
-        # Set the headers to update later on
-        if "col" in self.header:
-            self.header_action_col = "update"
-        if "row" in self.header:
-            self.header_action_row = "update"
 
     
     def get_header(self, header):
