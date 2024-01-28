@@ -81,7 +81,7 @@ def restructure(data, structure, fill_with_empty_columns=None, fill_with_empty_r
 
             # Handle if the data is structured as a dict_in_list
             if data_structure == "dict_in_list":
-                
+
                 # Handles 'fill_with_empty_rows' as specified
                 if fill_with_empty_rows:
                     rows = [key for d in data for key in d]
@@ -99,7 +99,7 @@ def restructure(data, structure, fill_with_empty_columns=None, fill_with_empty_r
                     if any(str(val) in empty_dicts for val in line.values()):
                         new_content.append([replace_empty])
                     else:
-                        new_content.extend([char for char in line.values()])
+                        new_content.append([char for char in line.values()])
                 
                 # Replaces the old data with the cleaned and restructured one
                 data = new_content
