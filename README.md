@@ -72,13 +72,15 @@ The following are parameters of the Table Class
 
 ### Replacing Content:
 
-- The functions 'replace_row(index, row=None)', 'replace_column(index, column=None)' and 'replace_cell(row, col, replace=None)' are used for replacing rows, column and cells
+- The functions 'replace_row(index, row=None)', 'replace_column(index, column=None)', 'replace_content(content)' and 'replace_cell(row, col, replace=None)' are used for replacing rows, column and cells
 
 - 'replace_row' and 'replace_column' both take 'index' and 'row'/'column' as arguments to specify which row/col/cell will be replaced
 
 - 'replace_cell' takes 'row' and 'col' instead of 'index' and 'replace' instead of 'row' or 'column as arguments'
 
-- if 'row', 'column' or 'replace' were not specified the row/column/cell will be replaced with standard 'replace_empty'
+- If 'row', 'column' or 'replace' were not specified the row/column/cell will be replaced with standard 'replace_empty'
+
+- When using 'replace_content' the headers wont change so they might need to be updated especially when using default headers
 
 - E.g. replace_cell(-1, 0, "hello") would replace the first element in the last row with "hello"
 
