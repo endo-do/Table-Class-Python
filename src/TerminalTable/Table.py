@@ -374,7 +374,17 @@ class Table:
 
 
     def replace_content(self, content):
+        """
+        Replaces the whole content of the table, headers not included
+
+        Args:
+        - content: new content of the table in a supported structure
+        """
+        
+        # Restructure the new content into a 'list_in_list'
         self.content = restructure(content, "list_in_list", self.fill_with_empty_columns, self.fill_with_empty_rows, self.empty_dicts, self.empty_lists, self.empty_cells, self.replace_empty)
+        
+        # Set the headers to insert
         self.header_action_col = "insert"
         self.header_action_row = "insert"
         
