@@ -6,6 +6,7 @@ class Table:
         content,
         space_left=1,
         space_right=1,
+        space_left_table=0,
         orientation="left",
         min_width=None,
         max_width=None,
@@ -13,7 +14,8 @@ class Table:
         empty_cells=["", "#empty"],
         empty_lists=[[], [""], ["#empty"]],
         replace_empty="",
-        header={},
+        col_header=False,
+        row_header=False
     ):
         
         """
@@ -33,7 +35,8 @@ class Table:
         - empty_lists: specifies what is considered as an empty list
         - empty_dicts: specifies what is considered as an empty dict
         - replace_empty: str: replaces empty cells and the content of empty lists and dicts with this str
-        - header: dict {header_type:[header]}: header_type: str: "row" or "col", "header": list or dict: content of the header
+        - col_header: bool: if true first collumn will be seperated and displayed as header
+        - row_header: bool: if true first row will be seperated and displayed as header
         """
 
         self.content = content
@@ -46,31 +49,28 @@ class Table:
         self.empty_cells = empty_cells 
         self.empty_lists = empty_lists 
         self.replace_empty = replace_empty 
-        self.default_header = []
-        self.header = header
+        self.col_header = col_header
+        self.row_header = row_header
+        self.space_left_table = space_left_table
 
         self.check_types()
     
     def check_types(self):
         if type(self.content) is not list:
-            raise Exception("ValueError: ")
+            raise Exception("ValueError: self.content has to be a list")
         if type(self.content[0]) is not list:
-            raise Exception("ValueError: ")
+            raise Exception("ValueError: self.content has to be a 2 dimensional list")
         for value in (self.space_left, self.space_right, self.min_width, self.max_width):
             if type(value) is not int and value is not None:
-                raise ValueError
-        if type(self.same_sized_cols) is not bool:
-            raise ValueError
-        for value in (self.empty_cells, self.empty_lists, self.default_header):
+                raise Exception(f"Value Error: {value} should be an integer")
+        for value in (self.same_sized_cols, self.row_header, self.col_header):
+            if type(value) is not bool:
+                raise Exception(f"Value Error: {value} should be a bool")
+        for value in (self.empty_cells, self.empty_lists):
             if type(value) is not list:
-                raise ValueError
+                raise Exception(f"Value Error: {value} is not a list")
         if type(self.replace_empty) is not str:
-            raise ValueError
-        if type(self.header) is not dict:
-            raise ValueError
-        for header_content in self.header.values():
-            if type(header_content) is not list:
-                raise ValueError
+            raise Exception(f"Value Error: self.replace_empty is not a str")
     
     def clean_data(self):
         for index, row in enumerate(self.content):
@@ -82,19 +82,9 @@ class Table:
                         self.content[index][index2] = self.replace_empty
             while len(row) < max([len(i) for i in self.content]):
                 self.content[index].append(self.replace_empty)
-        
-        if "row" in self.content:
-            while len(self.header["row"]) < len(self.content):
-                self.header["row"].append(self.replace_empty)
-        elif "col" in self.content:
-            while len(self.header["col"] < max([len(i) for i in self.content])):
-                self.header["col"].append(self.replace_empty)
 
     def get_content(self):
         return self.content
-    
-    def get_header(self):
-        return self.header
 
     def get_row(self, row):
         try:
@@ -121,14 +111,11 @@ class Table:
             raise Exception(f"ValueError: content has to be in a list format")
             
     def replace_column(self, index, content):
-        if type(content) is list and type(content[0]) is list:
-            try:
-                for row_index, i in enumerate(content):
-                    self.content[row_index][index] = i
-            except IndexError:
-                raise Exception(f"IndexError: column '{index}' does not exist")
-        else:
-            raise Exception(f"ValueError: content has to be in a list format")
+        try:
+            for row_index, i in enumerate(content):
+                self.content[row_index][index] = i
+        except IndexError:
+            raise Exception(f"IndexError: column '{index}' does not exist")
 
     def replace_row(self, index, content):
         self.content[index] = content
@@ -192,24 +179,6 @@ class Table:
 
     def swap_cols_rows(self):
         self.content = list(map(list, zip(*self.content)))
-
-    def add_header(self, header_type, header_content):
-        self.header[header_type] = header_content
-
-    def replace_header(self, header_type, header_content):
-        self.add_header(header_type, header_content)
-
-    def remove_header(self, header_type):
-        if header_type in self.header:
-            del self.header[header_type]
-
-    def use_row_as_header(self, row=0):
-        self.replace_header("row", self.get_row(row))
-        self.remove_row(row)
-    
-    def use_column_as_header(self, column=0):
-        self.replace_header("col", self.get_column(column))
-        self.remove_column(column)
     
     def display(self):
         
@@ -220,37 +189,11 @@ class Table:
         for row in self.content:
             if len(row) > self.columns: 
                 self.columns = len(row)
-
-        for header, content in self.header.items():
-            if content == ["#default"]:
-                if header not in self.default_header:
-                    self.default_header.append(header)
-
-        for header in self.header.keys():
-            if header in self.default_header:
-                if header == "row":
-                    self.header["row"] = [f"{i+1}." for i in range(self.columns)]
-                if header == "col":
-                    self.header["col"] = [f"{i+1}." for i in range(self.rows)]
-        display_content = self.content
-        if "col" in self.header and "row" in self.header:
-            display_content = [[i] + self.content[index] for index, i in enumerate(self.header["col"])]
-            display_content = [[""] + self.header["row"]] + display_content
-            self.rows += 1
-            self.columns += 1
-        elif "col" in self.header:
-            for index, i in enumerate(self.header["col"]):
-                display_content[index].insert(0, i)
-            self.columns += 1
-        elif "row" in self.header:
-            display_content.insert(0, self.header["row"])
-            self.rows += 1
-        
         
         self.max_chars = []
         for cell in range(self.columns): 
             self.max_chars.append(0)
-        for row in display_content: 
+        for row in self.content: 
             active_column = 0
             for cell in row:
                 if len(str(cell)) > self.max_chars[active_column]: 
@@ -270,7 +213,10 @@ class Table:
         if self.same_sized_cols:
             self.max_chars = [max(self.max_chars) for i in self.max_chars]
         
+        self.header = {"col":[], "row":[]}
+
         column_index = 0  
+        print(self.space_left_table * " ", end="")
         print("╔", end="")
         for column in self.max_chars:
             print("═" * self.space_left, end="")  
@@ -282,7 +228,7 @@ class Table:
             
             else:
             
-                if "col" in self.header and column_index == 0:
+                if self.col_header and column_index == 0:
                     print("╦", end="")
             
                 else:
@@ -290,14 +236,16 @@ class Table:
             
             column_index += 1  
         row_index = 0
+        
         for row in range(self.rows): 
+            print(self.space_left_table * " ", end="")
             print("║", end="") 
             column_index = 0
 
             for column in range(self.columns):
 
-                spacebar_counter = self.max_chars[column] - len(str(display_content[row][column])) 
-                text = str(display_content[row][column])
+                spacebar_counter = self.max_chars[column] - len(str(self.content[row][column])) 
+                text = str(self.content[row][column])
 
                 if len(text) > self.max_chars[column_index]:
 
@@ -331,7 +279,7 @@ class Table:
                 if column_index == self.columns - 1: 
                     print("║") 
                 else:
-                    if "col" in self.header and column_index == 0:
+                    if self.col_header and column_index == 0:
                         line = "║"
                     else:
                         line = "│" 
@@ -339,19 +287,19 @@ class Table:
                 column_index += 1  
             
             if row_index == 0 and "row" in self.header: 
-                left_border = "╠"
+                left_border = self.space_left_table * " " + "╠"
                 connection = "═"
                 right_border = "╣"
                 cross_connection = "╪"
 
             elif row_index == self.rows - 1:
-                left_border = "╚"
+                left_border = self.space_left_table * " " + "╚"
                 connection = "═"
                 right_border = "╝"
                 cross_connection = "╧"
 
             else:
-                left_border = "╟"
+                left_border = self.space_left_table * " " + "╟"
                 connection = "─"
                 right_border = "╢"
                 cross_connection = "┼"
@@ -369,12 +317,12 @@ class Table:
                 
                 else:
                 
-                    if "col" in self.header and column_index == 0:
+                    if self.col_header and column_index == 0:
                 
                         if row_index == self.rows - 1:
                             print("╩", end="")
                 
-                        elif "row" in self.header and row_index == 0:
+                        elif self.row_header and row_index == 0:
                             print("╬", end="")
                 
                         else:
